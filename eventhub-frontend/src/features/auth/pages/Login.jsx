@@ -19,8 +19,17 @@ function Login() {
             });
 
             localStorage.setItem("eventhub_token", data.token);
+            localStorage.setItem("eventhub_role",data.user.role);
 
-            navigate("/");
+            if (data.user.role==='client') {
+                navigate('/client/dashboard') 
+            }
+            if (data.user.role==='traiteur') {
+                navigate('/trateur/dashboard')
+            }
+            if (data.user.role==='admin') {
+                navigate('/admin/dashboard')
+            }
         } catch (error) {
             setError(error.message);
         }
