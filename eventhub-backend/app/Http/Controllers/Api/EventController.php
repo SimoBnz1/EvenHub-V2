@@ -24,6 +24,13 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
+
+        if ($request->user()->role !== 'traiteur') {
+            return response()->json([
+                'message' => 'Accès interdit'
+            ], 403);
+        }
+        
         $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|string|max:100',
