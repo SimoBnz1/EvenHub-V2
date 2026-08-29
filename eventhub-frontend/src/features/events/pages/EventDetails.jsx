@@ -1,6 +1,7 @@
 import { MapPin, Users, Star, Heart, ArrowLeft } from "lucide-react";
 
 import { Link, useParams, useNavigate } from "react-router-dom";
+import Navbar from "../../../components/layout/Navbar";
 function EventDetails() {
     const { id } = useParams();
 const navigate = useNavigate();
@@ -65,14 +66,10 @@ const navigate = useNavigate();
     const event = events.find((item) => item.id === Number(id));
 
     return (
-        <div className="min-h-screen bg-[#FDFCF9]">
-            <div className="max-w-7xl mx-auto px-6 py-8">
-
-                <Link to="/" className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-[#263128]">
-                    <ArrowLeft size={16} />
-                    Retour
-                </Link>
-
+        <>
+        <Navbar />
+             <div className="min-h-screen bg-[#FDFCF9]">
+            <div className="max-w-7xl mx-auto px-6 py-2">
                 <div className="mt-6 grid lg:grid-cols-2 gap-10">
 
                     <div>
@@ -146,6 +143,8 @@ const navigate = useNavigate();
                 </div>
             </div>
         </div>
+        </>
+       
     );
 }
 

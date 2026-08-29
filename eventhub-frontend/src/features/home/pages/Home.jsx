@@ -8,7 +8,9 @@ import WhyEventHub from "../components/WhyEventHub";
 import TraiteursSection from "../components/TraiteursSection";
 import FinalCTA from "../components/FinalCTA";
 
+
 function Home() {
+   
     return (
         <>
             <Navbar />
