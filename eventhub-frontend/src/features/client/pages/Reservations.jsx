@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, CalendarDays, MapPin, Users } from "lucide-react";
 import { useState } from "react";
+import Navbar from "../../../components/layout/Navbar";
 
 function Reservation() {
     const { id } = useParams();
@@ -28,7 +29,9 @@ function Reservation() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFCF9]">
+        <>
+        <Navbar />
+            <div className="min-h-screen bg-[#FDFCF9]">
             <div className="max-w-5xl mx-auto px-6 py-10">
 
                 <Link to={`/events/${id}`} className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-[#263128]">
@@ -123,6 +126,8 @@ function Reservation() {
                 </div>
             </div>
         </div>
+        </>
+        
     );
 }
 
