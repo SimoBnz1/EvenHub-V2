@@ -37,14 +37,7 @@ function Dashboard() {
 
                <TraiteurSidebar />
 
-                <div className="absolute bottom-6 left-5 right-5">
-
-                    <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-3 text-white/50 hover:text-white text-sm">
-                        <LogOut size={18} />
-                        Déconnexion
-                    </button>
-
-                </div>
+               
 
             </aside>
 
