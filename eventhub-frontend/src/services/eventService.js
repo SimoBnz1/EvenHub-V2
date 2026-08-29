@@ -132,3 +132,22 @@ export async function updateEvent(id, data) {
 
     return result;
 }
+
+
+export async function getEvents() {
+
+    const response = await fetch(API_URL + "/events", {
+        method: "GET",
+        headers: {
+            "Accept": "application/json"
+        }
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error("Erreur lors du chargement des événements");
+    }
+
+    return result;
+}
