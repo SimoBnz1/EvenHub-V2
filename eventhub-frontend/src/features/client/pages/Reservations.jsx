@@ -1,133 +1,261 @@
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, CalendarDays, MapPin, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, CalendarDays, MapPin, Users, CheckCircle } from "lucide-react";
 import Navbar from "../../../components/layout/Navbar";
+import { getEvent } from "../../../services/eventService";
+import { createReservation } from "../../../services/reservationService";
 
 function Reservation() {
+
     const { id } = useParams();
+    const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        date: "",
-        location: "",
-        guests: ""
-    });
+    const [date, setDate] = useState("");
+    const [location, setLocation] = useState("");
+    const [guests, setGuests] = useState("");
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
+    const [event, setEvent] = useState(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    useEffect(() => {
 
-        console.log({
+        async function loadEvent() {
+
+            try {
+
+                const data = await getEvent(id);
+
+                setEvent(data);
+
+            } catch (error) {
+
+                setError(error.message);
+            }
+        }
+
+        loadEvent();
+
+    }, [id]);
+
+    const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    console.log(localStorage.getItem("eventhub_token"));
+
+    try {
+        setError("");
+        setLoading(true);
+
+        await createReservation({
             event_id: id,
-            ...formData
+            event_date: date,
+            location: location,
+            guest_count: guests
         });
-    };
+
+        navigate("/reservations");
+
+    } catch (error) {
+        setError(error.message);
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <>
-        <Navbar />
-            <div className="min-h-screen bg-[#FDFCF9]">
-            <div className="max-w-5xl mx-auto px-6 py-10">
+            <Navbar />
 
-                <Link to={`/events/${id}`} className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-[#263128]">
-                    <ArrowLeft size={16} />
-                    Retour à l'événement
-                </Link>
+            <main className="bg-[#F7F5F0] min-h-[calc(100vh-70px)]">
 
-                <div className="mt-8 grid lg:grid-cols-[1fr_360px] gap-8">
+                <div className="max-w-5xl mx-auto px-6 py-5">
 
-                    <div className="bg-white border border-stone-200 rounded-[28px_12px_28px_12px] p-7">
-                        <p className="text-xs uppercase tracking-[3px] text-[#78806F] font-semibold">
-                            Réservation
-                        </p>
+                    <Link to={"/events/" + id} className="inline-flex items-center gap-2 text-xs font-semibold text-[#777C74] hover:text-[#263128]">
+                        <ArrowLeft size={14} />
+                        Retour à l'événement
+                    </Link>
 
-                        <h1 className="mt-2 text-3xl font-bold text-[#20231F]">
-                            Préparez votre événement
-                        </h1>
+                    <div className="mt-4 grid lg:grid-cols-[1fr_330px] gap-5">
 
-                        <p className="mt-2 text-sm text-stone-500">
-                            Indiquez les informations principales de votre réservation.
-                        </p>
+                        {/* FORMULAIRE */}
+                        <section className="bg-white border border-[#E5E1D8] rounded-[24px] p-6">
 
-                        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                            <div className="flex items-center gap-3">
 
-                            <div>
-                                <label className="block text-sm font-semibold text-stone-700 mb-2">
-                                    Date de l'événement
-                                </label>
-
-                                <div className="relative">
-                                    <CalendarDays size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
-
-                                    <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full h-12 pl-11 pr-4 bg-stone-50 border border-stone-200 rounded-[14px_7px_14px_7px] outline-none text-sm focus:border-[#66735A] focus:bg-white transition" />
+                                <div className="w-10 h-10 bg-[#E9EDE5] rounded-xl flex items-center justify-center">
+                                    <CalendarDays size={18} className="text-[#66735A]" />
                                 </div>
+
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#7D8775]">
+                                        Réservation
+                                    </p>
+
+                                    <h1 className="text-xl font-bold text-[#20231F]">
+                                        Réservez votre événement
+                                    </h1>
+                                </div>
+
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-stone-700 mb-2">
-                                    Lieu
-                                </label>
-
-                                <div className="relative">
-                                    <MapPin size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
-
-                                    <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Ex: Marrakech" className="w-full h-12 pl-11 pr-4 bg-stone-50 border border-stone-200 rounded-[14px_7px_14px_7px] outline-none text-sm focus:border-[#66735A] focus:bg-white transition" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-semibold text-stone-700 mb-2">
-                                    Nombre d'invités
-                                </label>
-
-                                <div className="relative">
-                                    <Users size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
-
-                                    <input type="number" name="guests" value={formData.guests} onChange={handleChange} placeholder="Ex: 120" min="1" className="w-full h-12 pl-11 pr-4 bg-stone-50 border border-stone-200 rounded-[14px_7px_14px_7px] outline-none text-sm focus:border-[#66735A] focus:bg-white transition" />
-                                </div>
-                            </div>
-
-                            <button type="submit" className="w-full h-12 bg-[#263128] hover:bg-[#354137] text-white rounded-[15px_7px_15px_7px] text-sm font-semibold transition">
-                                Continuer
-                            </button>
-
-                        </form>
-                    </div>
-
-                    <div className="bg-[#263128] text-white rounded-[26px_10px_26px_10px] p-6 h-fit">
-                        <p className="text-xs uppercase tracking-[2px] text-white/50">
-                            Votre choix
-                        </p>
-
-                        <h2 className="mt-3 text-xl font-bold">
-                            Événement #{id}
-                        </h2>
-
-                        <p className="mt-3 text-sm text-white/60 leading-6">
-                            Les détails complets et le prix seront récupérés automatiquement depuis l'événement.
-                        </p>
-
-                        <div className="mt-6 pt-5 border-t border-white/10">
-                            <p className="text-xs text-white/50">
-                                Statut initial
+                            <p className="mt-3 text-xs text-[#8A8E86]">
+                                Renseignez les informations de votre événement pour envoyer votre demande.
                             </p>
 
-                            <span className="inline-block mt-2 px-3 py-1.5 bg-white/10 rounded-full text-xs">
-                                En attente
-                            </span>
-                        </div>
+                            {error && (
+                                <div className="mt-4 bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-xs">
+                                    {error}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleSubmit} className="mt-5">
+
+                                {/* DATE + GUESTS */}
+                                <div className="grid md:grid-cols-2 gap-4">
+
+                                    <div>
+
+                                        <label className="block mb-2 text-xs font-bold text-[#555A53]">
+                                            Date de l'événement
+                                        </label>
+
+                                        <div className="relative">
+
+                                            <CalendarDays size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B9187]" />
+
+                                            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="w-full h-11 pl-10 pr-3 bg-[#FAF9F6] border border-[#E3DFD7] rounded-xl text-sm outline-none focus:bg-white focus:border-[#66735A]" />
+
+                                        </div>
+
+                                    </div>
+
+                                    <div>
+
+                                        <label className="block mb-2 text-xs font-bold text-[#555A53]">
+                                            Nombre d'invités
+                                        </label>
+
+                                        <div className="relative">
+
+                                            <Users size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B9187]" />
+
+                                            <input type="number" value={guests} onChange={(e) => setGuests(e.target.value)} placeholder="Ex : 120" min="1" required className="w-full h-11 pl-10 pr-3 bg-[#FAF9F6] border border-[#E3DFD7] rounded-xl text-sm outline-none focus:bg-white focus:border-[#66735A]" />
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                {/* LOCATION */}
+                                <div className="mt-4">
+
+                                    <label className="block mb-2 text-xs font-bold text-[#555A53]">
+                                        Lieu de l'événement
+                                    </label>
+
+                                    <div className="relative">
+
+                                        <MapPin size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B9187]" />
+
+                                        <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Ex : Béni Mellal" required className="w-full h-11 pl-10 pr-3 bg-[#FAF9F6] border border-[#E3DFD7] rounded-xl text-sm outline-none focus:bg-white focus:border-[#66735A]" />
+
+                                    </div>
+
+                                </div>
+
+                                {/* INFO */}
+                                <div className="mt-5 flex gap-3 bg-[#F5F6F2] rounded-xl px-4 py-3">
+
+                                    <CheckCircle size={16} className="text-[#66735A] mt-0.5 shrink-0" />
+
+                                    <p className="text-[11px] leading-5 text-[#747A70]">
+                                        Votre demande sera envoyée au prestataire. Il pourra ensuite l'accepter ou la refuser.
+                                    </p>
+
+                                </div>
+
+                                <button type="submit" disabled={loading} className="mt-5 w-full h-11 bg-[#263128] hover:bg-[#354137] text-white rounded-xl text-sm font-bold transition disabled:opacity-50">
+                                    {loading ? "Envoi..." : "Envoyer la demande"}
+                                </button>
+
+                            </form>
+
+                        </section>
+
+                        {/* EVENT */}
+                        <aside className="bg-[#263128] text-white rounded-[24px] overflow-hidden h-fit">
+
+                            {event && event.image && (
+                                <div className="h-[160px] overflow-hidden">
+                                    <img src={"http://127.0.0.1:8000/storage/" + event.image} alt={event.title} className="w-full h-full object-cover" />
+                                </div>
+                            )}
+
+                            <div className="p-5">
+
+                                <p className="text-[9px] uppercase tracking-[2px] font-bold text-white/45">
+                                    Votre sélection
+                                </p>
+
+                                {event ? (
+                                    <>
+                                        <h2 className="mt-2 text-lg font-bold">
+                                            {event.title}
+                                        </h2>
+
+                                        <div className="mt-3 flex items-center gap-2 text-xs text-white/60">
+                                            <MapPin size={13} />
+                                            {event.city}
+                                        </div>
+
+                                        <div className="mt-2 flex items-center gap-2 text-xs text-white/60">
+                                            <Users size={13} />
+                                            Jusqu'à {event.capacity} personnes
+                                        </div>
+
+                                        <div className="mt-4 pt-4 border-t border-white/10">
+
+                                            <p className="text-[10px] text-white/45">
+                                                À partir de
+                                            </p>
+
+                                            <p className="mt-1 text-xl font-bold">
+                                                {Number(event.price).toLocaleString("fr-FR")} DH
+                                            </p>
+
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p className="mt-3 text-xs text-white/50">
+                                        Chargement...
+                                    </p>
+                                )}
+
+                                <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+
+                                    <span className="text-[10px] text-white/45">
+                                        Statut initial
+                                    </span>
+
+                                    <span className="px-3 py-1 bg-[#FFFFFF12] border border-white/10 rounded-full text-[10px] font-semibold">
+                                        En attente
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </aside>
+
                     </div>
 
                 </div>
-            </div>
-        </div>
+
+            </main>
         </>
-        
     );
 }
 
