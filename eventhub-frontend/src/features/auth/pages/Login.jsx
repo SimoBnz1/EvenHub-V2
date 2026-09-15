@@ -22,10 +22,10 @@ function Login() {
             localStorage.setItem("eventhub_role",data.user.role);
 
             if (data.user.role==='client') {
-                navigate('/client/dashboard') 
+                navigate("/"); 
             }
             if (data.user.role==='traiteur') {
-                navigate('/trateur/dashboard')
+                navigate('/traiteur/dashboard')
             }
             if (data.user.role==='admin') {
                 navigate('/admin/dashboard')

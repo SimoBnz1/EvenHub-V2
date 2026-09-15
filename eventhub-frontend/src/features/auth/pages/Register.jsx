@@ -30,7 +30,7 @@ function Register() {
             localStorage.setItem("eventhub_role", data.user.role);
 
             if (data.user.role === "client") {
-                navigate("/client/dashboard");
+                navigate("/");
             }
 
             if (data.user.role === "traiteur") {

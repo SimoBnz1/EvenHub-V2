@@ -9,6 +9,7 @@ import {
     LogOut,
     ChevronRight
 } from "lucide-react";
+import TraiteurSidebar from "../components/TraiteurSidebar";
 
 function Dashboard() {
 
@@ -34,51 +35,9 @@ function Dashboard() {
                     <span className="ml-1 text-[#C09A68] text-xs">✦</span>
                 </div>
 
-                <div className="mt-10">
+               <TraiteurSidebar />
 
-                    <p className="px-3 text-[11px] uppercase tracking-[2px] text-white/35">
-                        Espace traiteur
-                    </p>
-
-                    <nav className="mt-4 space-y-1">
-
-                        <button className="w-full flex items-center gap-3 px-3 py-3 rounded-xl bg-white/10 text-white text-sm font-medium">
-                            <LayoutDashboard size={18} />
-                            Tableau de bord
-                        </button>
-
-                        <button onClick={() => navigate("/traiteur/events")} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
-                            <CalendarDays size={18} />
-                            Mes événements
-                        </button>
-
-                        <button onClick={() => navigate("/traiteur/reservations")} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
-                            <ClipboardList size={18} />
-                            Réservations
-                        </button>
-
-                        <button onClick={() => navigate("/traiteur/equipment")} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
-                            <Package size={18} />
-                            Équipements
-                        </button>
-
-                        <button onClick={() => navigate("/traiteur/profile")} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-white/60 hover:bg-white/5 hover:text-white text-sm transition">
-                            <User size={18} />
-                            Mon profil
-                        </button>
-
-                    </nav>
-
-                </div>
-
-                <div className="absolute bottom-6 left-5 right-5">
-
-                    <button onClick={logout} className="w-full flex items-center gap-3 px-3 py-3 text-white/50 hover:text-white text-sm">
-                        <LogOut size={18} />
-                        Déconnexion
-                    </button>
-
-                </div>
+               
 
             </aside>
 

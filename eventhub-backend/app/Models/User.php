@@ -22,4 +22,9 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function events()
+{
+    return $this->hasMany(Event::class);
+}
 }

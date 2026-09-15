@@ -2,60 +2,104 @@ import { Heart, MapPin, Users, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function EventCard({ event }) {
+
     return (
-        <article className="group">
-            <Link to={`/events/${event.id}`} className="block cursor-pointer">
-                <div className="relative h-[230px] overflow-hidden rounded-[26px_10px_26px_10px]">
-                    <img src={event.image} alt={event.title} className="w-full h-full object-cover transition duration-500 group-hover:scale-105" />
+        <article className="group relative bg-white border border-[#E8E3D9] rounded-[28px] p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(38,49,40,0.10)]">
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
+            <Link to={"/events/" + event.id} className="block">
 
-                    <span className="absolute top-4 left-4 bg-[#F7F4ED]/95 px-3 py-1.5 rounded-full text-[11px] font-semibold text-[#384036]">
+                {/* Image */}
+                <div className="relative h-[245px] overflow-hidden rounded-[22px] bg-[#F1EEE7]">
+
+                    {event.image ? (
+                        <img src={"http://127.0.0.1:8000/storage/" + event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-sm text-[#8A8E86]">
+                            Aucune image
+                        </div>
+                    )}
+
+                    {/* Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#172019]/70 via-transparent to-black/5"></div>
+
+                    {/* Type */}
+                    <span className="absolute top-4 left-4 bg-[#F8F5EE]/95 backdrop-blur-sm px-3.5 py-2 rounded-full text-[10px] uppercase tracking-[1.5px] font-bold text-[#4F5C4A]">
                         {event.type}
                     </span>
 
+                    {/* Favorite */}
+                    <button type="button" onClick={(e) => e.preventDefault()} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#4C514B] transition hover:bg-white hover:text-[#B68D5B]">
+                        <Heart size={17} />
+                    </button>
+
+                    {/* Price */}
                     <div className="absolute bottom-4 left-4 text-white">
-                        <span className="text-xs opacity-80">À partir de</span>
-                        <p className="text-lg font-bold">{event.price} DH</p>
+                        <p className="text-[10px] uppercase tracking-[1.5px] text-white/70">
+                            À partir de
+                        </p>
+
+                        <div className="flex items-end gap-1 mt-0.5">
+                            <span className="text-[23px] leading-none font-bold">
+                                {Number(event.price).toLocaleString("fr-FR")}
+                            </span>
+
+                            <span className="text-xs font-semibold text-white/80 mb-[2px]">
+                                DH
+                            </span>
+                        </div>
                     </div>
+
                 </div>
 
-                <div className="pt-4 px-1">
-                    <p className="text-[11px] uppercase tracking-[1.5px] font-semibold text-[#78806F]">
-                        {event.traiteur}
-                    </p>
+                {/* Content */}
+                <div className="px-3 pt-5 pb-3">
 
-                    <h3 className="mt-1 text-[17px] font-bold text-[#20231F]">
-                        {event.title}
-                    </h3>
+                    <div className="flex items-start justify-between gap-4">
 
-                    <div className="mt-3 flex items-center gap-4 text-xs text-[#777C74]">
-                        <span className="flex items-center gap-1">
-                            <MapPin size={14} />
-                            {event.city}
-                        </span>
+                        <div>
+                            <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#87907F]">
+                                EventHub Selection
+                            </p>
 
-                        <span className="flex items-center gap-1">
-                            <Users size={14} />
-                            {event.capacity} personnes
-                        </span>
+                            <h3 className="mt-1.5 text-[19px] leading-snug font-bold text-[#20231F] group-hover:text-[#52604D] transition-colors">
+                                {event.title}
+                            </h3>
+                        </div>
+
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between">
-                        <span className="text-xs text-[#777C74]">
-                            <b className="text-[#B68D5B]">★ {event.rating}</b> · {event.reviews} avis
+                    {/* Informations */}
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+
+                        <div className="flex items-center gap-1.5 bg-[#F7F5F0] px-3 py-2 rounded-full text-xs font-medium text-[#686E65]">
+                            <MapPin size={13} className="text-[#66735A]" />
+                            <span>{event.city}</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 bg-[#F7F5F0] px-3 py-2 rounded-full text-xs font-medium text-[#686E65]">
+                            <Users size={13} className="text-[#66735A]" />
+                            <span>{event.capacity} personnes</span>
+                        </div>
+
+                    </div>
+
+                    {/* Bottom */}
+                    <div className="mt-5 pt-4 border-t border-[#EEEAE2] flex items-center justify-between">
+
+                        <span className="text-xs font-medium text-[#8A8E86]">
+                            Découvrir l'offre
                         </span>
 
-                        <span className="w-8 h-8 rounded-full border border-[#DCD8CF] flex items-center justify-center transition group-hover:bg-[#263128] group-hover:text-white group-hover:border-[#263128]">
-                            <ArrowUpRight size={15} />
+                        <span className="w-9 h-9 rounded-full bg-[#263128] text-white flex items-center justify-center transition-all duration-300 group-hover:bg-[#66735A] group-hover:rotate-45">
+                            <ArrowUpRight size={16} />
                         </span>
+
                     </div>
+
                 </div>
+
             </Link>
 
-            <button type="button" className="absolute">
-                <Heart size={16} />
-            </button>
         </article>
     );
 }
