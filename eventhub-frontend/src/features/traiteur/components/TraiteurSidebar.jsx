@@ -5,6 +5,7 @@ function TraiteurSidebar() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const category = localStorage.getItem("eventhub_category");
 
     const logout = () => {
         localStorage.removeItem("eventhub_token");
@@ -42,11 +43,17 @@ function TraiteurSidebar() {
                     <ClipboardList size={18} />
                     Réservations
                 </button>
+                {(category == "1" || category == "5") &&
+                    (
+                        <button onClick={() => navigate("/traiteur/equipment")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-left ${isActive("/traiteur/equipment") ? "bg-white text-[#263128] font-semibold" : "text-stone-300 hover:bg-white/10"}`}>
+                            <Package size={18} />
+                            Équipements
+                        </button>
+                    )
 
-                <button onClick={() => navigate("/traiteur/equipment")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-left ${isActive("/traiteur/equipment") ? "bg-white text-[#263128] font-semibold" : "text-stone-300 hover:bg-white/10"}`}>
-                    <Package size={18} />
-                    Équipements
-                </button>
+                }
+
+
 
                 <button onClick={() => navigate("/traiteur/profile")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-left ${isActive("/traiteur/profile") ? "bg-white text-[#263128] font-semibold" : "text-stone-300 hover:bg-white/10"}`}>
                     <User size={18} />

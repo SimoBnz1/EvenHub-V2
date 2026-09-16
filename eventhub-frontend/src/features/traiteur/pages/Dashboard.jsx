@@ -9,6 +9,7 @@ import {
     LogOut,
     ChevronRight
 } from "lucide-react";
+
 import TraiteurSidebar from "../components/TraiteurSidebar";
 
 function Dashboard() {
