@@ -39,30 +39,27 @@ function Reservation() {
     }, [id]);
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    e.preventDefault();
+        try {
+            setError("");
+            setLoading(true);
 
-    console.log(localStorage.getItem("eventhub_token"));
+            await createReservation({
+                event_id: id,
+                event_date: date,
+                location: location,
+                guest_count: guests
+            });
 
-    try {
-        setError("");
-        setLoading(true);
+            navigate("/reservations");
 
-        await createReservation({
-            event_id: id,
-            event_date: date,
-            location: location,
-            guest_count: guests
-        });
+        } catch (error) {
+            setError(error.message);
+        }
 
-        navigate("/reservations");
-
-    } catch (error) {
-        setError(error.message);
-    } finally {
         setLoading(false);
-    }
-};
+    };
 
     return (
         <>
@@ -125,8 +122,16 @@ function Reservation() {
 
                                             <CalendarDays size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B9187]" />
 
-                                            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="w-full h-11 pl-10 pr-3 bg-[#FAF9F6] border border-[#E3DFD7] rounded-xl text-sm outline-none focus:bg-white focus:border-[#66735A]" />
-
+                                            <input
+                                                type="date"
+                                                value={date}
+                                                onChange={(e) => {
+                                                    setDate(e.target.value);
+                                                    setError("");
+                                                }}
+                                                required
+                                                className="w-full h-11 pl-10 pr-3 bg-[#FAF9F6] border border-[#E3DFD7] rounded-xl text-sm outline-none focus:bg-white focus:border-[#66735A]"
+                                            />
                                         </div>
 
                                     </div>
