@@ -1,266 +1,363 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getEvent, updateEvent } from "../../../services/eventService";
+import { useEffect,useState } from "react";
+import { useNavigate,useParams } from "react-router-dom";
+import { ArrowLeft,Upload,CalendarPlus,MapPin,Users,Banknote,Package,Plus,Trash2 } from "lucide-react";
+import { getEvent,updateEvent } from "../../../services/eventService";
+import { getEquipment } from "../../../services/equipmentService";
 import TraiteurSidebar from "../components/TraiteurSidebar";
 
-function EditEvent() {
+function EditEvent(){
+    const navigate=useNavigate();
+    const {id}=useParams();
 
-    const navigate = useNavigate();
-    const { id } = useParams();
+    const [title,setTitle]=useState("");
+    const [type,setType]=useState("");
+    const [city,setCity]=useState("");
+    const [capacity,setCapacity]=useState("");
+    const [price,setPrice]=useState("");
+    const [description,setDescription]=useState("");
+    const [oldImage,setOldImage]=useState("");
+    const [image,setImage]=useState(null);
 
-    const [title, setTitle] = useState("");
-    const [type, setType] = useState("");
-    const [city, setCity] = useState("");
-    const [capacity, setCapacity] = useState("");
-    const [price, setPrice] = useState("");
-    const [description, setDescription] = useState("");
+    const [equipmentList,setEquipmentList]=useState([]);
+    const [selectedEquipment,setSelectedEquipment]=useState("");
+    const [equipmentQuantity,setEquipmentQuantity]=useState("");
+    const [eventEquipment,setEventEquipment]=useState([]);
 
-    const [oldImage, setOldImage] = useState("");
-    const [image, setImage] = useState(null);
+    const [error,setError]=useState("");
+    const [loading,setLoading]=useState(true);
+    const [saving,setSaving]=useState(false);
 
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
+    useEffect(()=>{
+        loadData();
+    },[id]);
 
+    async function loadData(){
+        try{
+            const event=await getEvent(id);
+            const equipment=await getEquipment();
 
-    useEffect(() => {
+            setTitle(event.title);
+            setType(event.type);
+            setCity(event.city);
+            setCapacity(event.capacity);
+            setPrice(event.price);
+            setDescription(event.description || "");
+            setOldImage(event.image || "");
+            setEquipmentList(equipment);
 
-        async function loadEvent() {
+            const selected=[];
 
-            try {
-
-                const event = await getEvent(id);
-
-                setTitle(event.title);
-                setType(event.type);
-                setCity(event.city);
-                setCapacity(event.capacity);
-                setPrice(event.price);
-                setDescription(event.description || "");
-                setOldImage(event.image);
-
-            } catch (error) {
-
-                setError(error.message);
-
-            } finally {
-
-                setLoading(false);
+            for(let i=0;i<event.equipment.length;i++){
+                selected.push({
+                    id:event.equipment[i].id,
+                    name:event.equipment[i].name,
+                    quantity:event.equipment[i].pivot.quantity,
+                    total_quantity:event.equipment[i].total_quantity
+                });
             }
+
+            setEventEquipment(selected);
+        }catch(error){
+            setError(error.message);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    function addEquipment(){
+        if(!selectedEquipment || !equipmentQuantity){
+            setError("Choisissez un équipement et une quantité");
+            return;
         }
 
-        loadEvent();
+        const equipment=equipmentList.find(item=>item.id==selectedEquipment);
 
-    }, [id]);
+        if(Number(equipmentQuantity)>equipment.total_quantity){
+            setError("La quantité dépasse le stock disponible");
+            return;
+        }
 
+        const exists=eventEquipment.find(item=>item.id==selectedEquipment);
 
-    const handleSubmit = async (e) => {
+        if(exists){
+            setError("Cet équipement est déjà ajouté");
+            return;
+        }
 
+        const newItem={
+            id:equipment.id,
+            name:equipment.name,
+            quantity:equipmentQuantity,
+            total_quantity:equipment.total_quantity
+        };
+
+        setEventEquipment(eventEquipment.concat(newItem));
+        setSelectedEquipment("");
+        setEquipmentQuantity("");
+        setError("");
+    }
+
+    function removeEquipment(equipmentId){
+        const newList=eventEquipment.filter(item=>item.id!==equipmentId);
+        setEventEquipment(newList);
+    }
+
+    async function handleSubmit(e){
         e.preventDefault();
 
-        try {
-
+        try{
             setError("");
+            setSaving(true);
 
-            await updateEvent(id, {
-                title: title,
-                type: type,
-                city: city,
-                capacity: capacity,
-                price: price,
-                description: description,
-                image: image
+            await updateEvent(id,{
+                title:title,
+                type:type,
+                city:city,
+                capacity:capacity,
+                price:price,
+                description:description,
+                image:image,
+                equipment:eventEquipment
             });
 
             navigate("/traiteur/events");
-
-        } catch (error) {
-
+        }catch(error){
             setError(error.message);
+        }finally{
+            setSaving(false);
         }
-    };
+    }
 
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-[#F5F3EE]">
-
-                <TraiteurSidebar />
-
+    if(loading){
+        return(
+            <div className="min-h-screen bg-[#F7F4ED]">
+                <TraiteurSidebar/>
                 <main className="ml-64 p-10">
-                    <p className="text-stone-500">
-                        Chargement...
-                    </p>
+                    <p className="text-sm text-[#66735A]">Chargement...</p>
                 </main>
-
             </div>
         );
     }
 
+    return(
+        <div className="min-h-screen bg-[#F7F4ED]">
+            <TraiteurSidebar/>
 
-    return (
-        <div className="min-h-screen bg-[#F5F3EE]">
+            <main className="ml-64 min-h-screen">
+                <div className="border-b border-[#E5E1D8]">
+                    <div className="px-10 py-6 flex items-center justify-between">
+                        <div>
+                            <button type="button" onClick={()=>navigate("/traiteur/events")} className="flex items-center gap-2 text-xs font-semibold text-[#777C74] hover:text-[#263128]">
+                                <ArrowLeft size={15}/>
+                                Mes événements
+                            </button>
 
-            <TraiteurSidebar />
+                            <div className="mt-4 flex items-center gap-3">
+                                <div className="w-11 h-11 rounded-2xl bg-[#E5E9DF] flex items-center justify-center text-[#66735A]">
+                                    <CalendarPlus size={20}/>
+                                </div>
 
-            <main className="ml-64 min-h-screen px-10 py-10">
+                                <div>
+                                    <h1 className="text-2xl font-bold text-[#20231F]">Modifier l'événement</h1>
+                                    <p className="mt-1 text-sm text-[#888C85]">Modifiez votre prestation et ses équipements.</p>
+                                </div>
+                            </div>
+                        </div>
 
-                <div className="max-w-4xl">
+                        <div className="hidden lg:block px-4 py-2 rounded-xl bg-[#ECE9DF]">
+                            <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#8B9284]">EventHub</p>
+                            <p className="text-xs font-semibold text-[#66735A]">Modification</p>
+                        </div>
+                    </div>
+                </div>
 
-                    <p className="text-sm font-semibold text-[#66735A]">
-                        Gestion des événements
-                    </p>
-
-                    <h1 className="mt-2 text-3xl font-bold text-[#20231F]">
-                        Modifier l'événement
-                    </h1>
-
-                    <p className="mt-2 text-sm text-stone-500">
-                        Modifiez les informations de votre événement.
-                    </p>
-
-
-                    <form onSubmit={handleSubmit} className="mt-8 bg-white border border-stone-200 rounded-2xl p-8">
+                <div className="px-10 py-8">
+                    <form onSubmit={handleSubmit} className="max-w-6xl">
 
                         {error && (
-                            <div className="mb-6 bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm">
+                            <div className="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600">
                                 {error}
                             </div>
                         )}
 
+                        <div className="grid lg:grid-cols-[1fr_340px] gap-6">
 
-                        <div className="grid grid-cols-2 gap-5">
+                            <div className="space-y-5">
 
-                            <div>
+                                <section className="bg-white border border-[#E7E3DB] rounded-[22px] p-6">
+                                    <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#8B9284]">Informations</p>
+                                    <h2 className="mt-1 mb-5 text-lg font-bold text-[#20231F]">Détails de l'événement</h2>
 
-                                <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                    Titre
-                                </label>
+                                    <div className="grid md:grid-cols-2 gap-4">
 
-                                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full h-12 px-4 border border-stone-200 rounded-xl outline-none focus:border-[#66735A]" />
+                                        <div className="md:col-span-2">
+                                            <label className="block mb-2 text-xs font-bold text-[#4D514B]">Titre</label>
+                                            <input type="text" value={title} onChange={(e)=>setTitle(e.target.value)} required className="w-full h-11 px-4 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]"/>
+                                        </div>
+
+                                        <div>
+                                            <label className="block mb-2 text-xs font-bold text-[#4D514B]">Type</label>
+                                            <select value={type} onChange={(e)=>setType(e.target.value)} required className="w-full h-11 px-4 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]">
+                                                <option value="">Choisir</option>
+                                                <option value="Mariage">Mariage</option>
+                                                <option value="Anniversaire">Anniversaire</option>
+                                                <option value="Dîner">Dîner</option>
+                                                <option value="Entreprise">Entreprise</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="block mb-2 text-xs font-bold text-[#4D514B]">Ville</label>
+                                            <div className="relative">
+                                                <MapPin size={15} className="absolute left-4 top-3.5 text-[#8A9182]"/>
+                                                <input type="text" value={city} onChange={(e)=>setCity(e.target.value)} required className="w-full h-11 pl-10 pr-4 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]"/>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block mb-2 text-xs font-bold text-[#4D514B]">Capacité</label>
+                                            <div className="relative">
+                                                <Users size={15} className="absolute left-4 top-3.5 text-[#8A9182]"/>
+                                                <input type="number" value={capacity} onChange={(e)=>setCapacity(e.target.value)} min="1" required className="w-full h-11 pl-10 pr-4 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]"/>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block mb-2 text-xs font-bold text-[#4D514B]">Prix</label>
+                                            <div className="relative">
+                                                <Banknote size={15} className="absolute left-4 top-3.5 text-[#8A9182]"/>
+                                                <input type="number" value={price} onChange={(e)=>setPrice(e.target.value)} min="0" required className="w-full h-11 pl-10 pr-16 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]"/>
+                                                <span className="absolute right-4 top-3.5 text-xs text-[#8A8E86]">MAD</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </section>
+
+                                <section className="bg-white border border-[#E7E3DB] rounded-[22px] p-6">
+                                    <div className="flex items-center gap-3 mb-5">
+                                        <div className="w-9 h-9 rounded-xl bg-[#E8ECE3] flex items-center justify-center">
+                                            <Package size={17} className="text-[#66735A]"/>
+                                        </div>
+
+                                        <div>
+                                            <h2 className="text-base font-bold text-[#20231F]">Équipements</h2>
+                                            <p className="text-xs text-[#92958F]">Matériel nécessaire pour cet événement.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-[1fr_130px_44px] gap-3">
+                                        <select value={selectedEquipment} onChange={(e)=>setSelectedEquipment(e.target.value)} className="h-11 px-4 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]">
+                                            <option value="">Équipement</option>
+
+                                            {equipmentList.map((item)=>(
+                                                <option key={item.id} value={item.id}>
+                                                    {item.name} · {item.total_quantity} dispo.
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <input type="number" value={equipmentQuantity} onChange={(e)=>setEquipmentQuantity(e.target.value)} min="1" placeholder="Quantité" className="h-11 px-3 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none focus:border-[#66735A]"/>
+
+                                        <button type="button" onClick={addEquipment} className="h-11 rounded-xl bg-[#66735A] text-white flex items-center justify-center">
+                                            <Plus size={18}/>
+                                        </button>
+                                    </div>
+
+                                    {eventEquipment.length===0 && (
+                                        <p className="mt-4 text-xs text-[#92958F]">Aucun équipement sélectionné.</p>
+                                    )}
+
+                                    <div className="mt-4 space-y-2">
+                                        {eventEquipment.map((item)=>(
+                                            <div key={item.id} className="flex items-center justify-between px-4 py-3 bg-[#F7F6F2] border border-[#ECE8DF] rounded-xl">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                                                        <Package size={14} className="text-[#66735A]"/>
+                                                    </div>
+
+                                                    <div>
+                                                        <p className="text-sm font-bold text-[#30342E]">{item.name}</p>
+                                                        <p className="text-[11px] text-[#969991]">Stock : {item.total_quantity}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-4">
+                                                    <span className="text-xs font-bold text-[#66735A]">x {item.quantity}</span>
+
+                                                    <button type="button" onClick={()=>removeEquipment(item.id)} className="w-8 h-8 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-50">
+                                                        <Trash2 size={15}/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                <section className="bg-white border border-[#E7E3DB] rounded-[22px] p-6">
+                                    <h2 className="text-base font-bold text-[#20231F]">Description</h2>
+
+                                    <textarea value={description} onChange={(e)=>setDescription(e.target.value)} rows="5" className="mt-4 w-full px-4 py-3 bg-[#FAF9F6] border border-[#E5E1D9] rounded-xl text-sm outline-none resize-none focus:border-[#66735A]"></textarea>
+                                </section>
 
                             </div>
 
-
                             <div>
+                                <section className="bg-[#263128] rounded-[22px] p-5 lg:sticky lg:top-6">
+                                    <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#AEB7A8]">Visuel</p>
+                                    <h2 className="mt-1 text-lg font-bold text-white">Photo principale</h2>
 
-                                <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                    Type
-                                </label>
+                                    <label className="mt-5 w-full h-[220px] border border-dashed border-white/25 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden bg-white/5">
 
-                                <select value={type} onChange={(e) => setType(e.target.value)} className="w-full h-12 px-4 border border-stone-200 rounded-xl outline-none focus:border-[#66735A]">
+                                        {image ? (
+                                            <img src={URL.createObjectURL(image)} alt={title} className="w-full h-full object-cover"/>
+                                        ) : oldImage ? (
+                                            <img src={"http://127.0.0.1:8000/storage/"+oldImage} alt={title} className="w-full h-full object-cover"/>
+                                        ) : (
+                                            <div className="text-center">
+                                                <div className="mx-auto w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
+                                                    <Upload size={19} className="text-white"/>
+                                                </div>
+                                                <p className="mt-3 text-sm font-bold text-white">Ajouter une photo</p>
+                                            </div>
+                                        )}
 
-                                    <option value="">
-                                        Choisir un type
-                                    </option>
+                                        <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e)=>setImage(e.target.files[0])} className="hidden"/>
+                                    </label>
 
-                                    <option value="Mariage">
-                                        Mariage
-                                    </option>
+                                    <p className="mt-2 text-[10px] text-[#AEB7A8]">Cliquez sur la photo pour la changer.</p>
 
-                                    <option value="Anniversaire">
-                                        Anniversaire
-                                    </option>
+                                    <div className="mt-5 bg-white/5 rounded-xl p-4">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-[#AEB7A8]">Équipements</span>
+                                            <span className="font-bold text-white">{eventEquipment.length}</span>
+                                        </div>
 
-                                    <option value="Dîner">
-                                        Dîner
-                                    </option>
+                                        <div className="mt-3 flex justify-between text-xs">
+                                            <span className="text-[#AEB7A8]">Capacité</span>
+                                            <span className="font-bold text-white">{capacity || 0} pers.</span>
+                                        </div>
 
-                                    <option value="Entreprise">
-                                        Entreprise
-                                    </option>
+                                        <div className="mt-3 flex justify-between text-xs">
+                                            <span className="text-[#AEB7A8]">Prix</span>
+                                            <span className="font-bold text-white">{price || 0} MAD</span>
+                                        </div>
+                                    </div>
 
-                                </select>
+                                    <button type="submit" disabled={saving} className="mt-5 w-full h-12 bg-[#C09A68] text-[#263128] rounded-xl text-sm font-bold disabled:opacity-50">
+                                        {saving ? "Enregistrement..." : "Enregistrer les modifications"}
+                                    </button>
 
-                            </div>
-
-
-                            <div>
-
-                                <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                    Ville
-                                </label>
-
-                                <input type="text" value={city} onChange={(e) => setCity(e.target.value)} className="w-full h-12 px-4 border border-stone-200 rounded-xl outline-none focus:border-[#66735A]" />
-
-                            </div>
-
-
-                            <div>
-
-                                <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                    Capacité
-                                </label>
-
-                                <input type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} className="w-full h-12 px-4 border border-stone-200 rounded-xl outline-none focus:border-[#66735A]" />
-
-                            </div>
-
-
-                            <div>
-
-                                <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                    Prix
-                                </label>
-
-                                <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full h-12 px-4 border border-stone-200 rounded-xl outline-none focus:border-[#66735A]" />
-
+                                    <button type="button" onClick={()=>navigate("/traiteur/events")} className="mt-3 w-full h-11 border border-white/15 text-white rounded-xl text-sm font-semibold hover:bg-white/5">
+                                        Annuler
+                                    </button>
+                                </section>
                             </div>
 
                         </div>
-
-
-                        <div className="mt-5">
-
-                            <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                Description
-                            </label>
-
-                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows="5" className="w-full px-4 py-3 border border-stone-200 rounded-xl outline-none resize-none focus:border-[#66735A]"></textarea>
-
-                        </div>
-
-
-                        <div className="mt-5">
-
-                            <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                Image actuelle
-                            </label>
-
-                            {oldImage && (
-                                <img src={"http://127.0.0.1:8000/storage/" + oldImage} alt={title} className="w-48 h-32 object-cover rounded-xl border border-stone-200 mb-4" />
-                            )}
-
-                            <label className="block mb-2 text-sm font-semibold text-stone-700">
-                                Changer l'image
-                            </label>
-
-                            <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setImage(e.target.files[0])} className="block w-full text-sm text-stone-500 border border-stone-200 rounded-xl p-3" />
-
-                            <p className="mt-2 text-xs text-stone-400">
-                                Laissez vide pour garder l'image actuelle.
-                            </p>
-
-                        </div>
-
-
-                        <div className="mt-8 flex justify-end gap-3">
-
-                            <button type="button" onClick={() => navigate("/traiteur/events")} className="px-6 py-3 border border-stone-200 rounded-xl text-sm font-semibold text-stone-600">
-                                Annuler
-                            </button>
-
-                            <button type="submit" className="px-6 py-3 bg-[#263128] text-white rounded-xl text-sm font-semibold">
-                                Enregistrer
-                            </button>
-
-                        </div>
-
                     </form>
-
                 </div>
-
             </main>
-
         </div>
     );
 }
