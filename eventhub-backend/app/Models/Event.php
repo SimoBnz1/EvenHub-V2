@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Equipment;
 class Event extends Model
 {
     protected $fillable = [
@@ -23,7 +23,17 @@ class Event extends Model
     }
 
     public function reservations()
-{
-    return $this->hasMany(Reservation::class);
-}
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function equipment()
+    {
+        return $this->belongsToMany(
+            Equipment::class,
+            'event_equipment',
+            'event_id',
+            'equipment_id'
+        )->withPivot('quantity');
+    }
 }
