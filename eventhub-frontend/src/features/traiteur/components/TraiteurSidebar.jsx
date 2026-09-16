@@ -6,6 +6,8 @@ function TraiteurSidebar() {
     const navigate = useNavigate();
     const location = useLocation();
     const category = localStorage.getItem("eventhub_category");
+    console.log(category);
+    
 
     const logout = () => {
         localStorage.removeItem("eventhub_token");
