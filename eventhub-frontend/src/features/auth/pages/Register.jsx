@@ -3,46 +3,49 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../../services/authService";
 
 function Register() {
-    const navigate = useNavigate();
+    const navigate=useNavigate();
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirmation, setPasswordConfirmation] = useState("");
-    const [role, setRole] = useState("client");
-    const [error, setError] = useState("");
+    const [name,setName]=useState("");
+    const [email,setEmail]=useState("");
+    const [password,setPassword]=useState("");
+    const [passwordConfirmation,setPasswordConfirmation]=useState("");
+    const [role,setRole]=useState("client");
+    const [categoryId,setCategoryId]=useState("");
+    const [error,setError]=useState("");
 
-    const handleSubmit = async (e) => {
+    const handleSubmit=async(e)=>{
         e.preventDefault();
 
-        try {
+        try{
             setError("");
 
-            const data = await registerUser({
-                name: name,
-                email: email,
-                password: password,
-                password_confirmation: passwordConfirmation,
-                role: role
+            const data=await registerUser({
+                name:name,
+                email:email,
+                password:password,
+                password_confirmation:passwordConfirmation,
+                role:role,
+                category_id:categoryId
             });
 
-            localStorage.setItem("eventhub_token", data.token);
-            localStorage.setItem("eventhub_role", data.user.role);
+            localStorage.setItem("eventhub_token",data.token);
+            localStorage.setItem("eventhub_role",data.user.role);
+            localStorage.setItem("eventhub_category",data.user.category_id);
 
-            if (data.user.role === "client") {
+            if(data.user.role==="client"){
                 navigate("/");
             }
 
-            if (data.user.role === "traiteur") {
+            if(data.user.role==="traiteur"){
                 navigate("/traiteur/dashboard");
             }
 
-        } catch (error) {
+        }catch(error){
             setError(error.message);
         }
     };
 
-    return (
+    return(
         <div className="min-h-screen bg-stone-50 flex items-center justify-center px-6 py-10">
             <div className="w-full max-w-5xl bg-white rounded-[32px_14px_32px_14px] overflow-hidden border border-stone-200 shadow-xl shadow-stone-200/40 grid md:grid-cols-2">
 
@@ -58,9 +61,7 @@ function Register() {
                     </div>
 
                     <div className="absolute bottom-10 left-8 right-8 text-white">
-                        <p className="text-xs uppercase tracking-[3px] text-white/60">
-                            Créer un compte
-                        </p>
+                        <p className="text-xs uppercase tracking-[3px] text-white/60">Créer un compte</p>
 
                         <h2 className="mt-3 text-3xl font-bold">
                             Rejoignez EventHub et simplifiez vos événements.
@@ -74,9 +75,7 @@ function Register() {
 
                 <div className="p-8 md:p-10 flex flex-col justify-center">
 
-                    <p className="text-xs uppercase tracking-[3px] text-[#78806F] font-semibold">
-                        Inscription
-                    </p>
+                    <p className="text-xs uppercase tracking-[3px] text-[#78806F] font-semibold">Inscription</p>
 
                     <h1 className="mt-2 text-3xl font-bold text-[#20231F]">
                         Créer votre compte
@@ -95,12 +94,7 @@ function Register() {
                                 Nom complet
                             </label>
 
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl"
-                            />
+                            <input type="text" value={name} onChange={(e)=>setName(e.target.value)} required className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl" />
                         </div>
 
                         <div>
@@ -108,12 +102,7 @@ function Register() {
                                 Adresse email
                             </label>
 
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl"
-                            />
+                            <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl" />
                         </div>
 
                         <div>
@@ -123,36 +112,41 @@ function Register() {
 
                             <div className="grid grid-cols-2 gap-3">
 
-                                <button
-                                    type="button"
-                                    onClick={() => setRole("client")}
-                                    className={role === "client" ? "h-12 bg-[#263128] text-white rounded-xl" : "h-12 bg-stone-100 rounded-xl"}
-                                >
+                                <button type="button" onClick={()=>{setRole("client");setCategoryId("");}} className={role==="client" ? "h-12 bg-[#263128] text-white rounded-xl" : "h-12 bg-stone-100 rounded-xl"}>
                                     Client
                                 </button>
 
-                                <button
-                                    type="button"
-                                    onClick={() => setRole("traiteur")}
-                                    className={role === "traiteur" ? "h-12 bg-[#263128] text-white rounded-xl" : "h-12 bg-stone-100 rounded-xl"}
-                                >
+                                <button type="button" onClick={()=>setRole("traiteur")} className={role==="traiteur" ? "h-12 bg-[#263128] text-white rounded-xl" : "h-12 bg-stone-100 rounded-xl"}>
                                     Prestataire
                                 </button>
 
                             </div>
                         </div>
 
+                        {role==="traiteur" && (
+                            <div>
+                                <label className="block text-sm font-semibold text-stone-700 mb-2">
+                                    Votre catégorie
+                                </label>
+
+                                <select value={categoryId} onChange={(e)=>setCategoryId(e.target.value)} required className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl">
+                                    <option value="">Choisir une catégorie</option>
+                                    <option value="1">Traiteur</option>
+                                    <option value="2">Photographe</option>
+                                    <option value="3">Décoration</option>
+                                    <option value="4">DJ</option>
+                                    <option value="5">Matériel</option>
+                                    <option value="6">Pâtisserie</option>
+                                </select>
+                            </div>
+                        )}
+
                         <div>
                             <label className="block text-sm font-semibold text-stone-700 mb-2">
                                 Mot de passe
                             </label>
 
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl"
-                            />
+                            <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl" />
                         </div>
 
                         <div>
@@ -160,12 +154,7 @@ function Register() {
                                 Confirmer le mot de passe
                             </label>
 
-                            <input
-                                type="password"
-                                value={passwordConfirmation}
-                                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                                className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl"
-                            />
+                            <input type="password" value={passwordConfirmation} onChange={(e)=>setPasswordConfirmation(e.target.value)} required className="w-full h-12 px-4 bg-stone-50 border border-stone-200 rounded-xl" />
                         </div>
 
                         <button type="submit" className="w-full h-12 bg-[#263128] text-white rounded-xl font-semibold">
@@ -176,7 +165,7 @@ function Register() {
 
                     <p className="mt-6 text-center text-sm text-stone-500">
                         Vous avez déjà un compte ?{" "}
-                        <button onClick={() => navigate("/login")} className="font-semibold text-[#66735A]">
+                        <button onClick={()=>navigate("/login")} className="font-semibold text-[#66735A]">
                             Se connecter
                         </button>
                     </p>
