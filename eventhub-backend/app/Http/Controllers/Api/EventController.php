@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 class EventController extends Controller
 {
     public function index()
-    {
-        return response()->json(Event::latest()->get());
-    }
+{
+    $events=Event::with('user')->latest()->get();
+    return response()->json($events);
+}
 
     public function myEvents(Request $request)
     {
