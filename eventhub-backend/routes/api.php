@@ -5,6 +5,10 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\EquipmentController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\PrestataireController;
+
+Route::get('/top-prestataires',[PrestataireController::class,'top']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -22,5 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-events', [EventController::class, 'myEvents']);
     Route::apiResource('reservations', ReservationController::class);
     Route::apiResource('equipment', EquipmentController::class);
+    Route::apiResource('reviews',ReviewController::class);
 
 });
