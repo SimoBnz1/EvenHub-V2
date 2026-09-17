@@ -2,8 +2,7 @@ import {useEffect,useState} from "react";
 import EventCard from "./EventCard";
 import {getEvents} from "../../../services/eventService";
 
-function EventsSection({categoryId}){
-
+function EventsSection({categoryId,searchType,searchCity}){
     const [events,setEvents]=useState([]);
     const [loading,setLoading]=useState(true);
 
@@ -22,38 +21,37 @@ function EventsSection({categoryId}){
         loadEvents();
     },[]);
 
-    const filteredEvents=categoryId
-        ? events.filter((event)=>event.user?.category_id==categoryId)
-        : events;
+    const filteredEvents=events.filter((event)=>{
+        if(categoryId && event.user && event.user.category_id!=categoryId){
+            return false;
+        }
+
+        if(searchType && !event.type.toLowerCase().includes(searchType.toLowerCase())){
+            return false;
+        }
+
+        if(searchCity && !event.city.toLowerCase().includes(searchCity.toLowerCase())){
+            return false;
+        }
+
+        return true;
+    });
 
     return(
-        <section className="w-full bg-gradient-to-b from-[#FDFCF9] via-[#FAF8F3] to-[#F7F4ED] py-14">
+        <section className="w-full bg-gradient-to-b from-[#FDFCF9] via-[#FAF8F3] to-[#F7F4ED] ">
             <div className="max-w-7xl mx-auto px-6">
 
                 <div className="flex items-end justify-between mb-7">
                     <div>
-                        <span className="text-[11px] uppercase tracking-[3px] font-semibold text-[#78806F]">
-                            À découvrir
-                        </span>
-
-                        <h2 className="mt-2 text-2xl md:text-3xl font-bold text-[#20231F]">
-                            Des événements qui donnent envie.
-                        </h2>
+                        <span className="text-[11px] uppercase tracking-[3px] font-semibold text-[#78806F]">À découvrir</span>
+                        <h2 className="mt-2 text-2xl md:text-3xl font-bold text-[#20231F]">Des événements qui donnent envie.</h2>
                     </div>
-
-                    <button onClick={()=>window.location.reload()} className="hidden sm:block text-sm font-semibold text-[#66735A] hover:text-[#263128]">
-                        Voir tous les événements →
-                    </button>
                 </div>
 
                 {loading ? (
-                    <p className="text-stone-500">
-                        Chargement des événements...
-                    </p>
+                    <p className="text-stone-500">Chargement des événements...</p>
                 ) : filteredEvents.length==0 ? (
-                    <p className="text-stone-500">
-                        Aucun événement dans cette catégorie.
-                    </p>
+                    <p className="text-stone-500">Aucun événement trouvé.</p>
                 ) : (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
                         {filteredEvents.map((event)=>(
