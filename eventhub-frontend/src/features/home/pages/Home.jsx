@@ -10,13 +10,15 @@ import FinalCTA from "../components/FinalCTA";
 
 function Home(){
     const [categoryId,setCategoryId]=useState(null);
+    const [searchType,setSearchType]=useState("");
+    const [searchCity,setSearchCity]=useState("");
 
     return(
         <>
             <Navbar/>
-            <Hero/>
+            <Hero setSearchType={setSearchType} setSearchCity={setSearchCity}/>
             <CategoriesSection setCategoryId={setCategoryId}/>
-            <EventsSection categoryId={categoryId}/>
+            <EventsSection categoryId={categoryId} searchType={searchType} searchCity={searchCity}/>
             <WhyEventHub/>
             <TraiteursSection/>
             <FinalCTA/>
