@@ -23,7 +23,7 @@ function CategoriesSection({setCategoryId}){
     ];
 
     return(
-        <section className="w-full bg-[#FDFCF9] pt-12 pb-10">
+        <section className="w-full bg-[#FDFCF9]  pb-10">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="bg-[#FAF8F3] border border-[#E9E4DA] rounded-[30px_14px_30px_14px] px-6 py-5 flex flex-col lg:flex-row lg:items-center gap-6 shadow-[0_10px_35px_rgba(32,35,31,0.05)]">
 
