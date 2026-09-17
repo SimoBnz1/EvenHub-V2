@@ -36,4 +36,8 @@ class Event extends Model
             'equipment_id'
         )->withPivot('quantity');
     }
+    public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
 }
