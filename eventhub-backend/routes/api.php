@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\EquipmentController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\PrestataireController;
+use App\Http\Controllers\Api\FavoriteController;
 
 Route::get('/top-prestataires',[PrestataireController::class,'top']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -27,5 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reservations', ReservationController::class);
     Route::apiResource('equipment', EquipmentController::class);
     Route::apiResource('reviews',ReviewController::class);
+    Route::apiResource('favorites',FavoriteController::class);
 
 });
