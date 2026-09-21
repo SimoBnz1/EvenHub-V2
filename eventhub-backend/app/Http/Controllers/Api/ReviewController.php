@@ -88,6 +88,14 @@ class ReviewController extends Controller
         ]);
     }
 
+    public function eventReviews($id)
+{
+    return Review::with('client')
+        ->where('event_id',$id)
+        ->latest()
+        ->get();
+}
+
     public function destroy(Request $request,Review $review)
     {
         if($review->client_id!=$request->user()->id){
