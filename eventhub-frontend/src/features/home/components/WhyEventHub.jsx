@@ -2,7 +2,7 @@ import { CalendarCheck, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
 
 function WhyEventHub() {
     return (
-        <section className="bg-stone-50 pt-16 pb-20">
+        <section className="bg-stone-50 pt-16 pb-6">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
 
