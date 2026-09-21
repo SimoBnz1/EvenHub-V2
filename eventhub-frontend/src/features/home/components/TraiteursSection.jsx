@@ -1,8 +1,10 @@
 import {useEffect,useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {MapPin,Star,LoaderCircle} from "lucide-react";
 import {getTopPrestataires} from "../../../services/top3Service";
 
 function TraiteursSection(){
+    const navigate=useNavigate();
     const [prestataires,setPrestataires]=useState([]);
     const [loading,setLoading]=useState(true);
 
@@ -30,7 +32,7 @@ function TraiteursSection(){
     }
 
     return(
-        <section className="bg-gradient-to-b from-stone-50 via-stone-100 to-stone-100 pt-10 pb-20">
+        <section className="bg-gradient-to-b from-stone-50 via-stone-100 to-stone-100">
             <div className="max-w-7xl mx-auto px-6">
 
                 <div className="mb-8">
@@ -51,7 +53,7 @@ function TraiteursSection(){
                 ) : (
                     <div className="grid lg:grid-cols-2 gap-5">
 
-                        <div className="group relative min-h-[440px] overflow-hidden rounded-[32px_12px_32px_12px]">
+                        <div onClick={()=>navigate("/prestataires/"+prestataires[0].id)} className="group relative min-h-[440px] overflow-hidden rounded-[32px_12px_32px_12px] cursor-pointer">
 
                             <img src={getImage(prestataires[0].image)} alt={prestataires[0].name} className="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105"/>
 
@@ -90,12 +92,14 @@ function TraiteursSection(){
                                 </div>
 
                             </div>
+
                         </div>
 
                         <div className="grid gap-5">
 
                             {prestataires.slice(1).map((prestataire)=>(
-                                <div key={prestataire.id} className="group bg-white rounded-[24px_10px_24px_10px] p-3 flex gap-5 border border-stone-200 hover:shadow-lg hover:shadow-stone-200/50 transition">
+
+                                <div key={prestataire.id} onClick={()=>navigate("/prestataires/"+prestataire.id)} className="group bg-white rounded-[24px_10px_24px_10px] p-3 flex gap-5 border border-stone-200 hover:shadow-lg hover:shadow-stone-200/50 transition cursor-pointer">
 
                                     <div className="w-[180px] h-[190px] shrink-0 overflow-hidden rounded-[18px_7px_18px_7px]">
                                         <img src={getImage(prestataire.image)} alt={prestataire.name} className="w-full h-full object-cover transition duration-500 group-hover:scale-105"/>
@@ -131,6 +135,7 @@ function TraiteursSection(){
                                     </div>
 
                                 </div>
+
                             ))}
 
                         </div>
