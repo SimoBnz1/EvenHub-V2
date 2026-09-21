@@ -61,15 +61,15 @@ function AppRoutes() {
             } />
             <Route path="/traiteur/dashboard" element={
                 <ProtectedRoute role="traiteur">
-                    <CreateEvent />
+                    <TraiteurDashboard />
                 </ProtectedRoute>
             } />
-            
+
             <Route path="/prestataires/:id" element={<PrestataireProfile />} />
             <Route path="/favorites" element={
-            <ProtectedRoute role="client">
+                <ProtectedRoute role="client">
                     <Favorites />
-            </ProtectedRoute>
+                </ProtectedRoute>
             } />
 
         </Routes>
