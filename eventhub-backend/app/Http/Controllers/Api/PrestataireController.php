@@ -41,22 +41,15 @@ class PrestataireController extends Controller
                     $category=$prestataire->category->name;
                 }
 
-                $image=null;
-                $city=null;
-
-                if(count($prestataire->events)>0){
-                    $image=$prestataire->events[0]->image;
-                    $city=$prestataire->events[0]->city;
-                }
-
                 $result[]=[
                     'id'=>$prestataire->id,
                     'name'=>$prestataire->name,
                     'category'=>$category,
                     'rating'=>round($rating,1),
                     'reviews_count'=>$nombreAvis,
-                    'image'=>$image,
-                    'city'=>$city
+                    'image'=>$prestataire->photo,
+                    'city'=>$prestataire->city,
+                    'bio'=>$prestataire->bio
                 ];
             }
         }
@@ -67,4 +60,42 @@ class PrestataireController extends Controller
 
         return array_slice($result,0,3);
     }
+
+    public function show($id)
+{
+    $prestataire=User::with(['category','events'])
+        ->where('role','traiteur')
+        ->findOrFail($id);
+
+    $total=0;
+    $nombreAvis=0;
+
+    foreach($prestataire->events as $event){
+
+        $reviews=Review::where('event_id',$event->id)->get();
+
+        foreach($reviews as $review){
+            $total=$total+$review->rating;
+            $nombreAvis=$nombreAvis+1;
+        }
+    }
+
+    $rating=0;
+
+    if($nombreAvis>0){
+        $rating=round($total/$nombreAvis,1);
+    }
+
+    return response()->json([
+        'id'=>$prestataire->id,
+        'name'=>$prestataire->name,
+        'photo'=>$prestataire->photo,
+        'city'=>$prestataire->city,
+        'bio'=>$prestataire->bio,
+        'category'=>$prestataire->category,
+        'rating'=>$rating,
+        'reviews_count'=>$nombreAvis,
+        'events'=>$prestataire->events
+    ]);
+}
 }
