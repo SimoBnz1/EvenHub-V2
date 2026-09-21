@@ -25,3 +25,15 @@ export async function createReview(data){
 
     return result;
 }
+
+export async function getEventReviews(id){
+    const response=await fetch("http://127.0.0.1:8000/api/events/"+id+"/reviews");
+
+    const data=await response.json();
+
+    if(!response.ok){
+        throw new Error("Erreur lors du chargement des avis");
+    }
+
+    return data;
+}
