@@ -1,301 +1,196 @@
-EventHub
+# 🎉 EventHub
 
-Plateforme web de prestations événementielles développée avec Laravel,
-React et MySQL.
+<p align="center">
+  <strong>Plateforme intelligente de gestion des prestations événementielles</strong>
+</p>
 
-À propos
+<p align="center">
+  Une application web Full Stack développée avec Laravel, React, MySQL et Tailwind CSS.
+</p>
 
-EventHub est une plateforme qui met en relation des clients avec des
-prestataires du domaine événementiel.
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-API-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
+</p>
 
-Le visiteur peut consulter les événements et les profils des
-prestataires. Après connexion, le client peut effectuer une réservation,
-suivre ses demandes, gérer ses favoris et laisser un avis. Le
-prestataire dispose d'un espace pour gérer son profil, ses événements,
-ses équipements et les réservations reçues.
+---
 
-Technologies utilisées
+## 📌 À propos du projet
 
+**EventHub** est une plateforme web qui facilite la mise en relation entre les clients et les prestataires du domaine événementiel.
 
+L'objectif est de centraliser les prestations événementielles sur une seule plateforme et de simplifier la recherche, la réservation et la gestion des services.
 
- 
+La plateforme permet notamment de gérer plusieurs catégories de prestataires :
 
+- 🍽️ Traiteur
+- 📷 Photographe
+- 🎨 Décoration
+- 🎧 DJ
+- 🪑 Matériel
+- 🎂 Pâtisserie
 
-Back-end
+Les clients peuvent rechercher des offres, consulter les profils des prestataires, effectuer des réservations, gérer leurs favoris et laisser des avis.
 
-Laravel
+Les prestataires disposent de leur propre espace pour gérer leurs événements, leurs équipements, leur stock, leur profil et les réservations reçues.
 
-Laravel Sanctum
+---
 
-Eloquent ORM
+## ✨ Fonctionnalités principales
 
-API REST
+### 👤 Visiteur
 
-MySQL
+Un visiteur peut :
 
-Front-end
+- Consulter les événements disponibles
+- Rechercher et filtrer les offres
+- Consulter le détail d'un événement
+- Consulter le profil public d'un prestataire
+- Consulter les prestataires les mieux notés
+- Créer un compte
+- Se connecter
 
-React
+### ❤️ Client
 
-Vite
+Un client connecté peut :
 
-React Router
+- Créer une demande de réservation
+- Consulter ses réservations
+- Suivre le statut de ses demandes
+- Ajouter un événement aux favoris
+- Supprimer un événement des favoris
+- Consulter ses favoris
+- Laisser une note et un commentaire
 
-Tailwind CSS
+### 🏢 Prestataire
 
-Fetch API
+Un prestataire peut :
 
-Outils
+- Gérer son profil
+- Créer un événement
+- Modifier un événement
+- Supprimer un événement
+- Consulter ses événements
+- Gérer ses équipements
+- Gérer les quantités du stock
+- Consulter les réservations reçues
+- Accepter une réservation
+- Refuser une réservation
 
-Git
+---
 
-GitHub
+## 🧠 Gestion intelligente des réservations
 
-Postman
+L'une des fonctionnalités principales d'**EventHub** est la vérification automatique des disponibilités avant la création d'une réservation.
 
-XAMPP
+### 📅 Vérification des dates
 
-VS Code
+Pour les prestataires autres que les traiteurs, une date est bloquée lorsqu'une réservation non refusée existe déjà pour le même prestataire.
 
-Utilisateurs
+Cela permet d'éviter que plusieurs clients réservent le même prestataire pour la même date.
 
-Visiteur
+Une réservation avec le statut `rejected` ne bloque pas la date.
 
-Le visiteur peut :
+### 🪑 Vérification du stock du traiteur
 
-Consulter les événements
+Pour les traiteurs, plusieurs réservations peuvent être acceptées pendant la même journée si le stock disponible est suffisant.
 
-Rechercher et filtrer les événements et prestataires
+Le système applique actuellement les règles suivantes :
 
-Consulter le détail d'un événement
-
-Consulter le profil public d'un prestataire
-
-S'inscrire
-
-Se connecter
-
-Client
-
-Le client peut :
-
-Créer une demande de réservation
-
-Consulter ses réservations
-
-Ajouter un événement aux favoris
-
-Retirer un événement des favoris
-
-Consulter ses favoris
-
-Laisser une note et un commentaire
-
-Prestataire
-
-Le prestataire peut :
-
-Gérer son profil
-
-Créer un événement
-
-Modifier un événement
-
-Supprimer un événement
-
-Gérer ses équipements
-
-Gérer les quantités du stock
-
-Consulter les réservations reçues
-
-Accepter une réservation
-
-Refuser une réservation
-
-Fonctionnalités principales
-
-Authentification
-
-L'authentification est gérée avec Laravel Sanctum.
-
-Après la connexion, l'utilisateur est redirigé selon son rôle. Les
-routes privées du front-end sont également protégées.
-
-Gestion des événements
-
-Les prestataires peuvent créer, modifier et supprimer leurs événements.
-
-Un événement contient notamment :
-
-Titre
-
-Type
-
-Ville
-
-Capacité
-
-Prix
-
-Description
-
-Image
-
-Les visiteurs et les clients peuvent consulter les événements
-disponibles et ouvrir leur page de détail.
-
-Réservations
-
-Un client connecté peut créer une réservation en indiquant :
-
-La date
-
-La ville ou localisation
-
-Le nombre d'invités
-
-Le montant total est calculé à partir du prix de l'événement et du
-nombre d'invités.
-
-Le prestataire peut ensuite consulter la demande et l'accepter ou la
-refuser.
-
-Vérification de disponibilité
-
-EventHub vérifie la disponibilité avant de créer une réservation.
-
-Pour un prestataire autre que le traiteur, si une réservation non
-refusée existe déjà pour le même prestataire et la même date, une
-nouvelle réservation est bloquée.
-
-Une réservation avec le statut rejected ne bloque pas la date.
-
-Gestion du stock du traiteur
-
-Pour le traiteur, plusieurs réservations peuvent être enregistrées le
-même jour tant que le stock est suffisant.
-
-Le système utilise actuellement les règles suivantes :
-
+```text
 1 invité = 1 chaise
-
 1 table = 10 invités
+```
 
-Avant d'enregistrer la réservation, EventHub calcule le matériel déjà
-utilisé et vérifie les quantités restantes.
+Avant de créer une réservation, EventHub vérifie les réservations existantes et calcule les équipements déjà utilisés.
 
-Équipements
+Si le stock restant n'est pas suffisant, la réservation est refusée avec un message explicatif.
 
-Le prestataire peut gérer ses équipements et leurs quantités.
+### 💰 Calcul du montant
 
-Les informations principales sont :
+Le montant d'une réservation est calculé automatiquement :
 
-Nom
+```text
+Montant total = Prix de l'événement × Nombre d'invités
+```
 
-Quantité totale
+---
 
-Quantité disponible
+## 🎯 User Stories
 
-Les événements peuvent également être liés aux équipements à travers la
-table event_equipment.
+| ID | Acteur | User Story |
+|---|---|---|
+| US01 | Visiteur | Consulter les événements disponibles |
+| US02 | Visiteur | Rechercher et filtrer les offres |
+| US03 | Visiteur | Consulter le détail d'un événement |
+| US04 | Visiteur | Consulter le profil d'un prestataire |
+| US05 | Visiteur | S'inscrire et se connecter |
+| US06 | Client | Créer une demande de réservation |
+| US07 | Client | Consulter et suivre ses réservations |
+| US08 | Client | Ajouter ou supprimer des favoris |
+| US09 | Client | Laisser une note et un commentaire |
+| US10 | Prestataire | Créer, modifier et supprimer ses événements |
+| US11 | Prestataire | Gérer ses équipements et son stock |
+| US12 | Prestataire | Consulter les réservations reçues |
+| US13 | Prestataire | Accepter ou refuser une réservation |
+| US14 | Prestataire | Modifier son profil |
+| US15 | Système | Vérifier automatiquement la disponibilité |
+| US16 | Système | Vérifier le stock nécessaire pour une réservation |
 
-Favoris
+---
 
-Le client peut ajouter un événement à ses favoris et le supprimer plus
-tard.
+## 🛠️ Technologies utilisées
 
-Une page dédiée permet de consulter les événements enregistrés.
+### Back-end
 
-Avis et notes
+| Technologie | Utilisation |
+|---|---|
+| Laravel | API REST |
+| Laravel Sanctum | Authentification |
+| Eloquent ORM | Gestion des données |
+| MySQL | Base de données |
 
-Le client peut laisser une note et un commentaire sur un événement selon
-le flux prévu dans l'application.
+### Front-end
 
-Les avis sont affichés sur la page de détail de l'événement et sont
-utilisés pour calculer les notes des prestataires.
+| Technologie | Utilisation |
+|---|---|
+| React | Interface utilisateur |
+| Vite | Environnement de développement |
+| React Router | Navigation |
+| Tailwind CSS | Design |
+| Fetch API | Communication avec l'API |
 
-Profil prestataire
+### Outils
 
-Le prestataire peut gérer les informations de son profil.
+| Outil | Utilisation |
+|---|---|
+| Git | Gestion des versions |
+| GitHub | Hébergement du repository |
+| Postman | Test des API |
+| XAMPP | Environnement local |
+| VS Code | Développement |
 
-Un profil public permet aux visiteurs de consulter ses informations
-ainsi que ses événements.
+---
 
-Prestataires les mieux notés
+## 🏗️ Architecture du projet
 
-La page d'accueil affiche les prestataires les mieux notés à partir des
-avis enregistrés dans l'application.
+Le projet est séparé en deux parties principales :
 
-User Stories
-
-ID                En tant que       Je veux           Afin de
-
-US01              Visiteur          Consulter les     Découvrir les
-événements        offres
-disponibles
-
-US02              Visiteur          Rechercher et     Trouver
-filtrer           rapidement une
-offre
-
-US03              Visiteur          Consulter le      Voir ses
-détail d'un       informations
-événement
-
-US04              Visiteur          Consulter un      Voir ses
-profil            informations et
-prestataire       événements
-
-US05              Visiteur          M'inscrire et me  Accéder aux
-connecter         fonctionnalités
-privées
-
-US06              Client            Créer une         Réserver un
-réservation       événement
-
-US07              Client            Consulter mes     Suivre mes
-réservations      demandes
-
-US08              Client            Gérer mes favoris Retrouver les
-événements qui
-m'intéressent
-
-US09              Client            Laisser une note  Donner mon avis
-et un commentaire
-
-US10              Prestataire       Gérer mes         Administrer mes
-événements        offres
-
-US11              Prestataire       Gérer mes         Suivre mon stock
-équipements
-
-US12              Prestataire       Consulter les     Voir les demandes
-réservations      reçues
-
-US13              Prestataire       Accepter ou       Gérer les
-refuser une       demandes
-réservation
-
-US14              Prestataire       Modifier mon      Mettre à jour mes
-profil            informations
-
-US15              Système           Vérifier la       Éviter les
-disponibilité     conflits de
-réservation
-
-Architecture du projet
-
+```text
 EventHub-V3/
 │
 ├── eventhub-backend/
 │   ├── app/
-│   │   ├── Http/Controllers/Api/
+│   │   ├── Http/
+│   │   │   └── Controllers/
 │   │   └── Models/
 │   ├── database/
 │   │   ├── migrations/
 │   │   └── seeders/
-│   └── routes/api.php
+│   └── routes/
+│       └── api.php
 │
 ├── eventhub-frontend/
 │   └── src/
@@ -317,212 +212,293 @@ EventHub-V3/
 │       └── erd.png
 │
 └── README.md
+```
 
-Modèle de données
+---
 
-Les principales entités utilisées dans le projet sont :
+# 📊 Conception UML
 
+La conception de l'application est représentée à travers trois diagrammes principaux.
+
+## 👥 Diagramme de cas d'utilisation
+
+Ce diagramme représente les principales interactions entre les acteurs et la plateforme EventHub.
+
+<p align="center">
+  <img src="./docs/diagrams/use-case.png" alt="Diagramme de cas d'utilisation EventHub" width="900">
+</p>
+
+---
+
+## 🧩 Diagramme de classes
+
+Le diagramme de classes représente les principales entités de l'application ainsi que leurs relations.
+
+<p align="center">
+  <img src="./docs/diagrams/class-diagram.png" alt="Diagramme de classes EventHub" width="900">
+</p>
+
+---
+
+## 🗄️ Diagramme ERD
+
+Le diagramme ERD représente la structure de la base de données et les relations entre les différentes tables.
+
+<p align="center">
+  <img src="./docs/diagrams/erd.png" alt="ERD EventHub" width="900">
+</p>
+
+---
+
+## 🗃️ Modèle de données
+
+Les principales entités utilisées dans l'application sont :
+
+```text
 User
-
 Category
-
 Event
-
 Equipment
-
 Reservation
-
 Review
-
 Favorite
-
 event_equipment
+```
 
-Relations principales
+### Relations principales
 
+```text
 Category
-   |
-   v
- User (Prestataire) -----> Event -----> Reservation
-        |                    |
-        |                    +--------> Review
-        |                    |
-        |                    +--------> Favorite
-        |
-        +-----> Equipment
-                   ^
-                   |
-             event_equipment
-                   |
-                 Event
+   │
+   ▼
+User (Prestataire)
+   │
+   ├──────────────► Event
+   │                  │
+   │                  ├────► Reservation
+   │                  ├────► Review
+   │                  └────► Favorite
+   │
+   └──────────────► Equipment
 
-Conception UML
+Event ◄──── event_equipment ────► Equipment
+```
 
-Diagramme de cas d'utilisation
+---
 
-Le diagramme présente les interactions principales entre le visiteur, le
-client, le prestataire et l'application EventHub.
+## 🔐 Authentification et sécurité
 
+L'authentification de l'API est gérée avec **Laravel Sanctum**.
 
+Après la connexion, l'application utilise le rôle de l'utilisateur pour gérer les redirections et les accès.
 
-Diagramme de classes
+Les routes privées React sont protégées avec `ProtectedRoute`.
 
-Le diagramme de classes présente les principales entités utilisées dans
-l'application ainsi que leurs relations.
+```text
+Visiteur
+   │
+   └── Connexion
+          │
+          ├── Client ──────► Espace client
+          │
+          └── Prestataire ─► Dashboard prestataire
+```
 
+Les routes privées Laravel utilisent :
 
+```php
+auth:sanctum
+```
 
-ERD
+---
 
-Le diagramme ERD représente la structure de la base de données et les
-relations entre les tables.
+## 🔌 API REST
 
+### Routes publiques
 
+```http
+POST /api/register
+POST /api/login
 
-API principale
+GET /api/events
+GET /api/events/{id}
 
-Quelques routes utilisées par l'application :
+GET /api/prestataires/{id}
+GET /api/top-prestataires
 
-POST   /api/register
-POST   /api/login
+GET /api/events/{id}/reviews
+```
 
-GET    /api/events
-GET    /api/events/{id}
+### Routes protégées
 
-GET    /api/prestataires/{id}
-GET    /api/top-prestataires
+Les fonctionnalités privées sont accessibles après authentification :
 
-GET    /api/events/{id}/reviews
-
-Les fonctionnalités privées utilisent également les ressources :
-
+```text
 /api/events
+/api/my-events
 /api/reservations
 /api/equipment
 /api/reviews
 /api/favorites
 /api/profile
+```
 
-Installation
+---
 
-1. Cloner le projet
+## 🚀 Installation du projet
 
+### 1. Cloner le repository
+
+```bash
 git clone https://github.com/SimoBnz1/EvenHub-V2.git
 cd EvenHub-V2
+```
 
-2. Installer le back-end
+### 2. Installer le Back-end
 
+```bash
 cd eventhub-backend
 composer install
+```
 
-Créer le fichier .env à partir de .env.example, puis configurer la
-base de données MySQL.
+Créer le fichier `.env` :
 
-Exemple :
+```bash
+cp .env.example .env
+```
 
+Sous Windows, tu peux également copier manuellement `.env.example` et le renommer en `.env`.
+
+Configurer ensuite MySQL :
+
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=eventhub
 DB_USERNAME=root
 DB_PASSWORD=
+```
 
 Générer la clé Laravel :
 
+```bash
 php artisan key:generate
+```
 
 Exécuter les migrations :
 
+```bash
 php artisan migrate
+```
 
-Exécuter le seeder des catégories :
+Ajouter les catégories :
 
+```bash
 php artisan db:seed --class=CategorySeeder
+```
 
-Créer le lien de stockage si nécessaire pour les images :
+Créer le lien pour les images :
 
+```bash
 php artisan storage:link
+```
 
-Lancer Laravel :
+Démarrer l'API :
 
+```bash
 php artisan serve
+```
 
-Le back-end est disponible par défaut sur :
+API Laravel :
 
+```text
 http://127.0.0.1:8000
+```
 
-3. Installer le front-end
+### 3. Installer le Front-end
 
-Dans un autre terminal :
+Ouvrir un deuxième terminal :
 
+```bash
 cd eventhub-frontend
 npm install
 npm run dev
+```
 
-Le front-end est disponible par défaut sur :
+Application React :
 
+```text
 http://localhost:5173
+```
 
-Sécurité
+---
 
-Les routes privées de l'API utilisent auth:sanctum.
+## 🧪 Tests réalisés
 
-Côté React, ProtectedRoute contrôle également l'accès aux pages
-privées selon :
+Les principales fonctionnalités testées pendant le développement :
 
-Le token
+- ✅ Inscription
+- ✅ Connexion
+- ✅ Gestion des événements
+- ✅ Gestion des équipements
+- ✅ Création d'une réservation
+- ✅ Vérification de la capacité
+- ✅ Vérification des conflits de date
+- ✅ Vérification du stock du traiteur
+- ✅ Acceptation et refus des réservations
+- ✅ Gestion des favoris
+- ✅ Avis et notes
+- ✅ Profil prestataire
+- ✅ Protection des routes
 
-Le rôle de l'utilisateur
+---
 
-Les contrôleurs Laravel appliquent aussi les contrôles nécessaires avant
-certaines actions.
+## 🌿 Git Workflow
 
-Tests réalisés
+Le développement du projet a été organisé avec plusieurs branches :
 
-Les principales fonctionnalités testées pendant le développement sont :
-
-Inscription et connexion
-
-Création et gestion des événements
-
-Gestion des équipements
-
-Création d'une réservation
-
-Vérification des dates
-
-Vérification du stock du traiteur
-
-Acceptation et refus des réservations
-
-Favoris
-
-Avis et notes
-
-Profil prestataire
-
-Protection des routes
-
-Git Workflow
-
-Le projet a été développé avec plusieurs branches Git, notamment :
-
+```text
 main
-feature/AuthPage
-feature/EventManagement
-feature/ReservationManagement
+│
+├── feature/AuthPage
+├── feature/EventManagement
+└── feature/ReservationManagement
+```
 
-Les fonctionnalités ont été enregistrées dans des commits séparés avant
-d'être intégrées dans main avec des Pull Requests.
+Les différentes fonctionnalités ont été développées séparément puis intégrées dans `main` avec des Pull Requests.
 
-Conclusion
+---
 
-EventHub centralise les principales opérations entre les clients et les
-prestataires événementiels.
+## 📁 Documentation
 
-L'application permet de consulter les offres, gérer les réservations,
-les événements, les équipements, les favoris, les avis et les profils
-prestataires.
+Les diagrammes de conception sont disponibles dans :
 
-Le système de vérification de disponibilité et de stock permet également
-de limiter les conflits de réservation.
+```text
+docs/diagrams/
+```
+
+```text
+docs/diagrams/
+├── use-case.png
+├── class-diagram.png
+└── erd.png
+```
+
+---
+
+## 👨‍💻 Auteur
+
+**BEN IZZA Mohamed**
+
+Développeur Web Full Stack
+
+---
+
+## 📌 Conclusion
+
+**EventHub** permet de centraliser la gestion des prestations événementielles dans une seule application.
+
+La plateforme facilite la mise en relation entre les clients et les prestataires tout en proposant des fonctionnalités de réservation, de gestion des événements, des équipements, des favoris, des avis et des profils prestataires.
+
+Le système de vérification des disponibilités et du stock permet également de réduire les conflits de réservation et d'améliorer la gestion des prestations.
