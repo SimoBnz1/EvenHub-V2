@@ -17,10 +17,16 @@ function Home(){
         <>
             <Navbar/>
             <Hero setSearchType={setSearchType} setSearchCity={setSearchCity}/>
-            <CategoriesSection setCategoryId={setCategoryId}/>
-            <EventsSection categoryId={categoryId} searchType={searchType} searchCity={searchCity}/>
+            <div id="categories">
+                <CategoriesSection setCategoryId={setCategoryId}/>
+            </div>
+            <div id="events">
+                <EventsSection categoryId={categoryId} searchType={searchType} searchCity={searchCity}/>
+            </div>
             <WhyEventHub/>
-            <TraiteursSection/>
+            <div id="prestataires">
+                <TraiteursSection/>
+            </div>
             <FinalCTA/>
             <Footer/>
         </>
