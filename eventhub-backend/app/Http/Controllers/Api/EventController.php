@@ -16,6 +16,10 @@ class EventController extends Controller
 
     public function myEvents(Request $request)
     {
+        if ($request->user()->role!=='traiteur') {
+            return response()->json(['messg'=>'Acces interdit'],403);
+        };
+        
         $events=Event::where('user_id',$request->user()->id)->latest()->get();
         return response()->json($events);
     }
@@ -128,6 +132,9 @@ class EventController extends Controller
 
     public function destroy(Request $request,Event $event)
     {
+        if ($request->user()->role!=='traiteur') {
+           return response()->json(['messg'=>'Acces interdit'],403);
+        };
         if($event->user_id!==$request->user()->id){
             return response()->json(['message'=>'Cet événement ne vous appartient pas'],403);
         }
