@@ -50,7 +50,9 @@ class ReservationController extends Controller
         $prestataire=$event->user;
 
         if($request->guest_count>$event->capacity){
-            return response()->json(['message'=>'Le nombre de personnes dépasse la capacité'],422);
+            return response()->json([
+                'message'=>'Le nombre de personnes dépasse la capacité maximale de '.$event->capacity.' personnes'
+            ],422);
         }
 
         $reservations=Reservation::where('event_date',$request->event_date)
@@ -96,16 +98,20 @@ class ReservationController extends Controller
 
             if($request->guest_count>$chaisesDisponibles){
                 return response()->json([
-                    'message'=>'Pas assez de chaises disponibles. Choisissez une autre date.'
+                    'message'=>'Pas assez de chaises disponibles. Il reste '.$chaisesDisponibles.' chaises pour cette date.'
                 ],422);
             }
 
-            if(ceil($request->guest_count/10)>$tablesDisponibles){
+            $tablesNecessaires=ceil($request->guest_count/10);
+
+            if($tablesNecessaires>$tablesDisponibles){
                 return response()->json([
-                    'message'=>'Pas assez de tables disponibles. Choisissez une autre date.'
+                    'message'=>'Pas assez de tables disponibles. Il reste '.$tablesDisponibles.' tables pour cette date.'
                 ],422);
             }
         }
+
+        $total=$event->price*$request->guest_count;
 
         $reservation=Reservation::create([
             'client_id'=>$request->user()->id,
@@ -113,7 +119,7 @@ class ReservationController extends Controller
             'event_date'=>$request->event_date,
             'location'=>$request->location,
             'guest_count'=>$request->guest_count,
-            'total_amount'=>$event->price,
+            'total_amount'=>$total,
             'status'=>'pending'
         ]);
 
@@ -123,8 +129,22 @@ class ReservationController extends Controller
         ],201);
     }
 
-    public function show(Reservation $reservation)
+    public function show(Request $request,Reservation $reservation)
     {
+        $user=$request->user();
+
+        if($user->role=='client' && $reservation->client_id!=$user->id){
+            return response()->json(['message'=>'Accès interdit'],403);
+        }
+
+        if($user->role=='traiteur' && $reservation->event->user_id!=$user->id){
+            return response()->json(['message'=>'Accès interdit'],403);
+        }
+
+        if($user->role!='client' && $user->role!='traiteur'){
+            return response()->json(['message'=>'Accès interdit'],403);
+        }
+
         return $reservation;
     }
 
