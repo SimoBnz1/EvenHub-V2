@@ -1,328 +1,163 @@
-import { useNavigate } from "react-router-dom";
-import {
-    LayoutDashboard,
-    CalendarDays,
-    Plus,
-    ClipboardList,
-    Package,
-    User,
-    LogOut,
-    ChevronRight
-} from "lucide-react";
+import {useEffect,useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {CalendarDays,Plus,ClipboardList,Package,ChevronRight} from "lucide-react";
 import TraiteurSidebar from "../components/TraiteurSidebar";
+import {getMyEvents} from "../../../services/eventService";
+import {getReservations} from "../../../services/reservationService";
+import {getEquipment} from "../../../services/equipmentService";
 
-function Dashboard() {
+function Dashboard(){
+    const navigate=useNavigate();
 
-    const navigate = useNavigate();
+    const [events,setEvents]=useState([]);
+    const [reservations,setReservations]=useState([]);
+    const [equipment,setEquipment]=useState([]);
+    const [loading,setLoading]=useState(true);
+    const [error,setError]=useState("");
 
-    const logout = () => {
-        localStorage.removeItem("eventhub_token");
-        localStorage.removeItem("eventhub_role");
+    useEffect(()=>{
+        loadDashboard();
+    },[]);
 
-        navigate("/login");
-    };
+    async function loadDashboard(){
+        try{
+            const eventsData=await getMyEvents();
+            const reservationsData=await getReservations();
+            const equipmentData=await getEquipment();
 
-    return (
-        <div className="min-h-screen bg-[#F5F3EE] flex">
+            setEvents(eventsData);
+            setReservations(reservationsData);
+            setEquipment(equipmentData);
+        }catch(error){
+            setError(error.message);
+        }finally{
+            setLoading(false);
+        }
+    }
 
-            {/* SIDEBAR */}
+    return(
+        <div className="min-h-screen bg-[#F5F3EE]">
+            <TraiteurSidebar/>
 
-            <aside className="w-[250px] min-h-screen bg-[#20271F] text-white fixed left-0 top-0 px-5 py-6">
-
-                <div onClick={() => navigate("/")} className="cursor-pointer px-2">
-                    <span className="text-2xl font-bold">event</span>
-                    <span className="text-2xl ml-1 italic text-[#B8C1AE]">hub</span>
-                    <span className="ml-1 text-[#C09A68] text-xs">✦</span>
-                </div>
-
-               <TraiteurSidebar />
-
-               
-
-            </aside>
-
-
-            {/* CONTENT */}
-
-            <main className="ml-[250px] w-full">
-
-                {/* HEADER */}
-
+            <main className="ml-64 min-h-screen">
                 <header className="h-[76px] border-b border-stone-200 flex items-center justify-between px-10">
+                    <p className="text-xs text-stone-400">EventHub / Tableau de bord</p>
 
-                    <p className="text-xs text-stone-400">
-                        EventHub / Tableau de bord
-                    </p>
-
-                    <div className="flex items-center gap-3">
-
-                        <div className="text-right">
-                            <p className="text-sm font-semibold text-[#20231F]">
-                                Maison Amaya
-                            </p>
-
-                            <p className="text-xs text-stone-400">
-                                Traiteur
-                            </p>
-                        </div>
-
-                        <div className="w-10 h-10 rounded-full bg-[#D8DDD2] flex items-center justify-center text-[#263128] font-bold">
-                            M
-                        </div>
-
+                    <div className="px-4 py-2 rounded-xl bg-[#ECE9DF]">
+                        <p className="text-[10px] uppercase tracking-[2px] font-bold text-[#8B9284]">EventHub</p>
+                        <p className="text-xs font-semibold text-[#66735A]">Espace prestataire</p>
                     </div>
-
                 </header>
 
-
                 <div className="px-10 py-9 max-w-[1350px]">
-
-                    {/* TITLE */}
-
                     <section className="flex items-end justify-between">
-
                         <div>
-
-                            <p className="text-sm font-semibold text-[#66735A]">
-                                Bonjour, Maison Amaya
-                            </p>
-
-                            <h1 className="mt-1 text-3xl font-bold text-[#20231F]">
-                                Tableau de bord
-                            </h1>
-
-                            <p className="mt-2 text-sm text-stone-500">
-                                Un aperçu simple de votre activité sur EventHub.
-                            </p>
-
+                            <p className="text-sm font-semibold text-[#66735A]">Bienvenue sur EventHub</p>
+                            <h1 className="mt-1 text-3xl font-bold text-[#20231F]">Tableau de bord</h1>
+                            <p className="mt-2 text-sm text-stone-500">Un aperçu simple de votre activité sur EventHub.</p>
                         </div>
 
-                        <button onClick={() => navigate("/traiteur/events/create")} className="flex items-center gap-2 bg-[#263128] text-white px-5 py-3 rounded-xl text-sm font-semibold hover:bg-[#344036] transition">
-                            <Plus size={17} />
+                        <button onClick={()=>navigate("/traiteur/events/create")} className="flex items-center gap-2 bg-[#263128] text-white px-5 py-3 rounded-xl text-sm font-semibold hover:bg-[#344036] transition">
+                            <Plus size={17}/>
                             Nouvel événement
                         </button>
-
                     </section>
 
-
-                    {/* STATISTIQUES */}
-
-                    <section className="mt-10 bg-white border border-stone-200 rounded-2xl px-8 py-6">
-
-                        <p className="text-xs uppercase tracking-[2px] text-stone-400 font-semibold">
-                            Vue d'ensemble
-                        </p>
-
-                        <div className="mt-6 grid grid-cols-3">
-
-                            <div className="pr-8">
-
-                                <div className="flex items-center gap-2 text-stone-400">
-                                    <CalendarDays size={16} />
-                                    <p className="text-xs">
-                                        Événements publiés
-                                    </p>
-                                </div>
-
-                                <p className="mt-3 text-3xl font-bold text-[#20231F]">
-                                    3
-                                </p>
-
-                                <p className="mt-1 text-xs text-stone-400">
-                                    événements disponibles
-                                </p>
-
-                            </div>
-
-
-                            <div className="px-8 border-l border-stone-200">
-
-                                <div className="flex items-center gap-2 text-stone-400">
-                                    <ClipboardList size={16} />
-                                    <p className="text-xs">
-                                        Réservations
-                                    </p>
-                                </div>
-
-                                <p className="mt-3 text-3xl font-bold text-[#20231F]">
-                                    12
-                                </p>
-
-                                <p className="mt-1 text-xs text-stone-400">
-                                    demandes reçues
-                                </p>
-
-                            </div>
-
-
-                            <div className="pl-8 border-l border-stone-200">
-
-                                <div className="flex items-center gap-2 text-stone-400">
-                                    <Package size={16} />
-                                    <p className="text-xs">
-                                        Équipements
-                                    </p>
-                                </div>
-
-                                <p className="mt-3 text-3xl font-bold text-[#20231F]">
-                                    24
-                                </p>
-
-                                <p className="mt-1 text-xs text-stone-400">
-                                    articles enregistrés
-                                </p>
-
-                            </div>
-
+                    {error && (
+                        <div className="mt-6 px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-600">
+                            {error}
                         </div>
+                    )}
 
-                    </section>
+                    {loading ? (
+                        <p className="mt-10 text-sm text-stone-500">Chargement...</p>
+                    ) : (
+                        <>
+                            <section className="mt-10 bg-white border border-stone-200 rounded-2xl px-8 py-6">
+                                <p className="text-xs uppercase tracking-[2px] text-stone-400 font-semibold">Vue d'ensemble</p>
 
+                                <div className="mt-6 grid grid-cols-3">
+                                    <div className="pr-8">
+                                        <div className="flex items-center gap-2 text-stone-400">
+                                            <CalendarDays size={16}/>
+                                            <p className="text-xs">Événements publiés</p>
+                                        </div>
 
-                    {/* EVENTS */}
+                                        <p className="mt-3 text-3xl font-bold text-[#20231F]">{events.length}</p>
+                                        <p className="mt-1 text-xs text-stone-400">événements disponibles</p>
+                                    </div>
 
-                    <section className="mt-8">
+                                    <div className="px-8 border-l border-stone-200">
+                                        <div className="flex items-center gap-2 text-stone-400">
+                                            <ClipboardList size={16}/>
+                                            <p className="text-xs">Réservations</p>
+                                        </div>
 
-                        <div className="flex items-center justify-between mb-4">
+                                        <p className="mt-3 text-3xl font-bold text-[#20231F]">{reservations.length}</p>
+                                        <p className="mt-1 text-xs text-stone-400">demandes reçues</p>
+                                    </div>
 
-                            <div>
-                                <h2 className="text-lg font-bold text-[#20231F]">
-                                    Mes événements récents
-                                </h2>
+                                    <div className="pl-8 border-l border-stone-200">
+                                        <div className="flex items-center gap-2 text-stone-400">
+                                            <Package size={16}/>
+                                            <p className="text-xs">Équipements</p>
+                                        </div>
 
-                                <p className="mt-1 text-xs text-stone-400">
-                                    Les derniers événements publiés sur votre profil.
-                                </p>
-                            </div>
+                                        <p className="mt-3 text-3xl font-bold text-[#20231F]">{equipment.length}</p>
+                                        <p className="mt-1 text-xs text-stone-400">équipements enregistrés</p>
+                                    </div>
+                                </div>
+                            </section>
 
-                            <button onClick={() => navigate("/traiteur/events")} className="flex items-center gap-1 text-sm font-semibold text-[#66735A]">
-                                Voir tout
-                                <ChevronRight size={16} />
-                            </button>
+                            <section className="mt-8">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h2 className="text-lg font-bold text-[#20231F]">Mes événements récents</h2>
+                                        <p className="mt-1 text-xs text-stone-400">Vos derniers événements publiés.</p>
+                                    </div>
 
-                        </div>
-
-
-                        <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
-
-                            {/* EVENT 1 */}
-
-                            <div className="flex items-center px-6 py-5 border-b border-stone-100">
-
-                                <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=500&q=80" alt="Mariage" className="w-16 h-16 rounded-xl object-cover" />
-
-                                <div className="ml-4 flex-1">
-
-                                    <p className="text-sm font-semibold text-[#20231F]">
-                                        Mariage Jardin d'Atlas
-                                    </p>
-
-                                    <p className="mt-1 text-xs text-stone-400">
-                                        Marrakech · Mariage · 180 personnes
-                                    </p>
-
+                                    <button onClick={()=>navigate("/traiteur/events")} className="flex items-center gap-1 text-sm font-semibold text-[#66735A]">
+                                        Voir tout
+                                        <ChevronRight size={16}/>
+                                    </button>
                                 </div>
 
-                                <div className="w-32">
-                                    <p className="text-xs text-stone-400">
-                                        Prix
-                                    </p>
+                                <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden">
+                                    {events.length==0 ? (
+                                        <p className="p-6 text-sm text-stone-500">Aucun événement publié.</p>
+                                    ) : (
+                                        events.slice(0,3).map((event)=>(
+                                            <div key={event.id} className="flex items-center px-6 py-5 border-b border-stone-100">
+                                                {event.image ? (
+                                                    <img src={"http://127.0.0.1:8000/storage/"+event.image} alt={event.title} className="w-16 h-16 rounded-xl object-cover"/>
+                                                ) : (
+                                                    <div className="w-16 h-16 rounded-xl bg-[#E8ECE3] flex items-center justify-center">
+                                                        <CalendarDays size={20} className="text-[#66735A]"/>
+                                                    </div>
+                                                )}
 
-                                    <p className="mt-1 text-sm font-semibold text-[#20231F]">
-                                        8 500 MAD
-                                    </p>
+                                                <div className="ml-4 flex-1">
+                                                    <p className="text-sm font-semibold text-[#20231F]">{event.title}</p>
+                                                    <p className="mt-1 text-xs text-stone-400">{event.city} · {event.type} · {event.capacity} personnes</p>
+                                                </div>
+
+                                                <div className="w-32">
+                                                    <p className="text-xs text-stone-400">Prix</p>
+                                                    <p className="mt-1 text-sm font-semibold text-[#20231F]">{event.price} MAD</p>
+                                                </div>
+
+                                                <div className="w-28 text-right">
+                                                    <span className="text-xs px-3 py-1.5 rounded-full bg-[#EEF2EA] text-[#66735A]">Publié</span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
-
-                                <div className="w-28 text-right">
-                                    <span className="text-xs px-3 py-1.5 rounded-full bg-[#EEF2EA] text-[#66735A]">
-                                        Publié
-                                    </span>
-                                </div>
-
-                            </div>
-
-
-                            {/* EVENT 2 */}
-
-                            <div className="flex items-center px-6 py-5 border-b border-stone-100">
-
-                                <img src="https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=500&q=80" alt="Dinner" className="w-16 h-16 rounded-xl object-cover" />
-
-                                <div className="ml-4 flex-1">
-
-                                    <p className="text-sm font-semibold text-[#20231F]">
-                                        Dîner Élégance
-                                    </p>
-
-                                    <p className="mt-1 text-xs text-stone-400">
-                                        Casablanca · Dîner · 80 personnes
-                                    </p>
-
-                                </div>
-
-                                <div className="w-32">
-                                    <p className="text-xs text-stone-400">
-                                        Prix
-                                    </p>
-
-                                    <p className="mt-1 text-sm font-semibold text-[#20231F]">
-                                        4 200 MAD
-                                    </p>
-                                </div>
-
-                                <div className="w-28 text-right">
-                                    <span className="text-xs px-3 py-1.5 rounded-full bg-[#EEF2EA] text-[#66735A]">
-                                        Publié
-                                    </span>
-                                </div>
-
-                            </div>
-
-
-                            {/* EVENT 3 */}
-
-                            <div className="flex items-center px-6 py-5">
-
-                                <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=500&q=80" alt="Birthday" className="w-16 h-16 rounded-xl object-cover" />
-
-                                <div className="ml-4 flex-1">
-
-                                    <p className="text-sm font-semibold text-[#20231F]">
-                                        Garden Birthday
-                                    </p>
-
-                                    <p className="mt-1 text-xs text-stone-400">
-                                        Rabat · Anniversaire · 120 personnes
-                                    </p>
-
-                                </div>
-
-                                <div className="w-32">
-                                    <p className="text-xs text-stone-400">
-                                        Prix
-                                    </p>
-
-                                    <p className="mt-1 text-sm font-semibold text-[#20231F]">
-                                        5 000 MAD
-                                    </p>
-                                </div>
-
-                                <div className="w-28 text-right">
-                                    <span className="text-xs px-3 py-1.5 rounded-full bg-[#EEF2EA] text-[#66735A]">
-                                        Publié
-                                    </span>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </section>
-
+                            </section>
+                        </>
+                    )}
                 </div>
-
             </main>
-
         </div>
     );
 }

@@ -15,19 +15,34 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
-            'role' => 'required|in:client,traiteur'
+            'role' => 'required|in:client,traiteur',
+            'category_id' => 'nullable|exists:categories,id'
         ]);
+
+        if ($request->role == 'traiteur' && !$request->category_id) {
+            return response()->json([
+                'message' => 'Veuillez choisir une catégorie'
+            ], 422);
+        }
+
+        $categoryId = null;
+
+        if ($request->role == 'traiteur') {
+            $categoryId = $request->category_id;
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => $request->role,
+            'category_id' => $categoryId
         ]);
 
         $token = $user->createToken('eventhub_token')->plainTextToken;
+
         return response()->json([
-            'messg' => 'Compte cree avec succes',
+            'message' => 'Compte créé avec succès',
             'user' => $user,
             'token' => $token
         ], 201);

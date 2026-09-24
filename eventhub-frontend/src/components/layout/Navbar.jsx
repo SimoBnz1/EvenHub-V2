@@ -38,9 +38,15 @@ function Navbar() {
                 {/* Navigation */}
                 <div className="hidden md:flex items-center gap-8">
                     <Link to="/" className="text-sm font-semibold text-[#66735A]">Accueil</Link>
-                    <Link to="/providers" className="text-sm text-[#555B52] hover:text-[#66735A] transition">Prestataires</Link>
-                    <Link to="/categories" className="text-sm text-[#555B52] hover:text-[#66735A] transition">Catégories</Link>
-                    <Link to="/events" className="text-sm text-[#555B52] hover:text-[#66735A] transition">Événements</Link>
+                    <a href="/#prestataires" className="text-sm text-[#555B52] hover:text-[#66735A] transition">
+                        Prestataires
+                    </a>
+                    <a href="/#categories" className="text-sm text-[#555B52] hover:text-[#66735A] transition">
+                        Catégories
+                    </a>
+                    <a href="/#events" className="text-sm text-[#555B52] hover:text-[#66735A] transition">
+                        Événements
+                    </a>
                 </div>
 
                 {/* Guest */}

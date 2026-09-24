@@ -1,151 +1,151 @@
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL="http://127.0.0.1:8000/api";
 
-export async function createEvent(data) {
+export async function createEvent(data){
+    const token=localStorage.getItem("eventhub_token");
+    const formData=new FormData();
 
-    const token = localStorage.getItem("eventhub_token");
+    formData.append("title",data.title);
+    formData.append("type",data.type);
+    formData.append("city",data.city);
+    formData.append("capacity",data.capacity);
+    formData.append("price",data.price);
+    formData.append("description",data.description);
 
-    const formData = new FormData();
-
-    formData.append("title", data.title);
-    formData.append("type", data.type);
-    formData.append("city", data.city);
-    formData.append("capacity", data.capacity);
-    formData.append("price", data.price);
-    formData.append("description", data.description);
-
-    if (data.image) {
-        formData.append("image", data.image);
+    if(data.image){
+        formData.append("image",data.image);
     }
 
-    const response = await fetch(API_URL + "/events", {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer " + token
+    for(let i=0;i<data.equipment.length;i++){
+        formData.append("equipment["+i+"][id]",data.equipment[i].id);
+        formData.append("equipment["+i+"][quantity]",data.equipment[i].quantity);
+    }
+
+    const response=await fetch(API_URL+"/events",{
+        method:"POST",
+        headers:{
+            "Accept":"application/json",
+            "Authorization":"Bearer "+token
         },
-        body: formData
+        body:formData
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
         throw new Error(result.message || "Erreur lors de la création");
     }
 
     return result;
 }
 
-export async function getMyEvents() {
+export async function getMyEvents(){
+    const token=localStorage.getItem("eventhub_token");
 
-    const token = localStorage.getItem("eventhub_token");
-
-    const response = await fetch(API_URL + "/my-events", {
-        method: "GET",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer " + token
+    const response=await fetch(API_URL+"/my-events",{
+        method:"GET",
+        headers:{
+            "Accept":"application/json",
+            "Authorization":"Bearer "+token
         }
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
         throw new Error(result.message || "Erreur lors du chargement");
     }
 
     return result;
 }
 
-export async function deleteEvent(id) {
+export async function deleteEvent(id){
+    const token=localStorage.getItem("eventhub_token");
 
-    const token = localStorage.getItem("eventhub_token");
-
-    const response = await fetch(API_URL + "/events/" + id, {
-        method: "DELETE",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer " + token
+    const response=await fetch(API_URL+"/events/"+id,{
+        method:"DELETE",
+        headers:{
+            "Accept":"application/json",
+            "Authorization":"Bearer "+token
         }
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
         throw new Error(result.message || "Erreur lors de la suppression");
     }
 
     return result;
 }
 
-export async function getEvent(id) {
-
-    const response = await fetch(API_URL + "/events/" + id, {
-        method: "GET",
-        headers: {
-            "Accept": "application/json"
+export async function getEvent(id){
+    const response=await fetch(API_URL+"/events/"+id,{
+        method:"GET",
+        headers:{
+            "Accept":"application/json"
         }
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
         throw new Error(result.message || "Événement introuvable");
     }
 
     return result;
 }
 
+export async function updateEvent(id,data){
+    const token=localStorage.getItem("eventhub_token");
+    const formData=new FormData();
 
-export async function updateEvent(id, data) {
+    formData.append("title",data.title);
+    formData.append("type",data.type);
+    formData.append("city",data.city);
+    formData.append("capacity",data.capacity);
+    formData.append("price",data.price);
+    formData.append("description",data.description);
 
-    const token = localStorage.getItem("eventhub_token");
-
-    const formData = new FormData();
-
-    formData.append("title", data.title);
-    formData.append("type", data.type);
-    formData.append("city", data.city);
-    formData.append("capacity", data.capacity);
-    formData.append("price", data.price);
-    formData.append("description", data.description);
-
-    if (data.image) {
-        formData.append("image", data.image);
+    if(data.image){
+        formData.append("image",data.image);
     }
 
-    formData.append("_method", "PUT");
+    for(let i=0;i<data.equipment.length;i++){
+        formData.append("equipment["+i+"][id]",data.equipment[i].id);
+        formData.append("equipment["+i+"][quantity]",data.equipment[i].quantity);
+    }
 
-    const response = await fetch(API_URL + "/events/" + id, {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer " + token
+    formData.append("_method","PUT");
+
+    const response=await fetch(API_URL+"/events/"+id,{
+        method:"POST",
+        headers:{
+            "Accept":"application/json",
+            "Authorization":"Bearer "+token
         },
-        body: formData
+        body:formData
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
         throw new Error(result.message || "Erreur lors de la modification");
     }
 
     return result;
 }
 
-
-export async function getEvents() {
-
-    const response = await fetch(API_URL + "/events", {
-        method: "GET",
-        headers: {
-            "Accept": "application/json"
+export async function getEvents(){
+    const response=await fetch(API_URL+"/events",{
+        method:"GET",
+        headers:{
+            "Accept":"application/json"
         }
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
+    if(!response.ok){
         throw new Error("Erreur lors du chargement des événements");
     }
 

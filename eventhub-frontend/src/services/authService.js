@@ -22,19 +22,19 @@ export async function loginUser(data) {
 }
 
 export async function registerUser(data) {
-    const response = await fetch(API_URL + "/register", {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
+    const response=await fetch(API_URL+"/register",{
+        method:"POST",
+        headers:{
+            "Accept":"application/json",
+            "Content-Type":"application/json"
         },
-        body: JSON.stringify(data)
+        body:JSON.stringify(data)
     });
 
-    const result = await response.json();
+    const result=await response.json();
 
-    if (!response.ok) {
-        throw new Error("Erreur lors de l'inscription");
+    if(!response.ok){
+        throw new Error(result.message || "Erreur lors de l'inscription");
     }
 
     return result;

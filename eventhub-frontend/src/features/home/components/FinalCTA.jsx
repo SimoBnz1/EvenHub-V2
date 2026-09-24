@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 
 function FinalCTA() {
     return (
-        <section className="bg-stone-100 py-16">
+        <section className="bg-stone-100 py-6">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="relative overflow-hidden rounded-[34px_14px_34px_14px] bg-[#263128] px-8 py-12 md:px-12 md:py-14">
 
