@@ -20,6 +20,7 @@ function Login() {
 
             localStorage.setItem("eventhub_token", data.token);
             localStorage.setItem("eventhub_role",data.user.role);
+            localStorage.setItem("eventhub_category",data.user.category_id);
 
             if (data.user.role==='client') {
                 navigate("/"); 

@@ -10,6 +10,7 @@ import TraiteurEvents from "../features/traiteur/pages/Events";
 import EditEvent from "../features/traiteur/pages/EditEvent";
 import TraiteurReservations from "../features/traiteur/pages/Reservations";
 import ReservationCard from "../features/client/components/ReservationCard";
+import Equipment from "../features/traiteur/pages/Equipment";
 
 function AppRoutes() {
     return (
@@ -29,6 +30,8 @@ function AppRoutes() {
             <Route path="/traiteur/reservations" element={<TraiteurReservations />} />
 
             <Route path="/reservations" element={<ReservationCard />} />
+
+            <Route path="/traiteur/equipment" element={<Equipment />} />
 
         </Routes>
     );

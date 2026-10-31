@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ReservationController;
-
+use App\Http\Controllers\Api\EquipmentController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -21,5 +21,6 @@ Route::middleware('auth:sanctum')->group(function () {
     ]);
     Route::get('/my-events', [EventController::class, 'myEvents']);
     Route::apiResource('reservations', ReservationController::class);
+    Route::apiResource('equipment', EquipmentController::class);
 
 });
